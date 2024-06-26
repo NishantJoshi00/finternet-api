@@ -1,3 +1,4 @@
+use axum::routing::get;
 use error_stack::ResultExt;
 use tokio::net::TcpListener;
 
@@ -10,7 +11,8 @@ mod users;
 pub fn router<S: Send + Sync + Clone + 'static>() -> SResult<axum::Router<S>, ConfigurationError> {
     let router = axum::Router::new()
         .nest("/v1/users", users::router()?)
-        .nest("/v1/token_managers", token_managers::router()?);
+        .nest("/v1/token_managers", token_managers::router()?)
+        .route("/health", get(|| async { "Health is Good!" }));
 
     Ok(router)
 }
@@ -26,6 +28,7 @@ pub async fn start_server(
             .local_addr()
             .change_context(ConfigurationError::LocalAddressError)?
     );
+
     axum::serve(listener, router)
         .await
         .change_context(ConfigurationError::ServerStartError)

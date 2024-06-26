@@ -13,23 +13,26 @@ pub fn router<S: Send + Sync + Clone + 'static>() -> Result<axum::Router<S>, Con
             "/:user_id",
             get(get_user).put(update_user).delete(delete_user),
         )
-        .nest("/accounts", accounts::router::<S>()?);
+        .nest("/:user_id/accounts", accounts::router::<S>()?);
 
     Ok(router)
 }
 
 async fn create_user() -> impl IntoResponse {
+    // in: email, name, public_key, ua_addr 
+    // out: 
+    "create_user"
     // ...
 }
 
-async fn get_user(Path(user_id): Path<String>) -> impl IntoResponse {
+async fn get_user(Path(_user_id): Path<String>) -> impl IntoResponse {
     // ...
 }
 
-async fn update_user(Path(user_id): Path<String>) -> impl IntoResponse {
+async fn update_user(Path(_user_id): Path<String>) -> impl IntoResponse {
     // ...
 }
 
-async fn delete_user(Path(user_id): Path<String>) -> impl IntoResponse {
+async fn delete_user(Path(_user_id): Path<String>) -> impl IntoResponse {
     // ...
 }

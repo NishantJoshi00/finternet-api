@@ -14,7 +14,7 @@ pub fn setup(log_config: &LogConfig, crates_to_filter: impl AsRef<[&'static str]
 
     let console_filter = get_envfilter(
         log_config.filtering_directive.as_ref(),
-        LogLevel::Warn,
+        LogLevel::Info,
         log_config.log_level,
         &crates_to_filter,
     );
@@ -48,17 +48,16 @@ pub struct Guards {
     _log_guard: WorkerGuard,
 }
 
-#[derive(Deserialize, Debug, Clone, Default)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct LogConfig {
     pub log_level: LogLevel,
     pub log_format: LogFormat,
     pub filtering_directive: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone, Copy, Default)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 #[serde(rename_all = "lowercase")]
 pub enum LogLevel {
-    #[default]
     Debug,
     Info,
     Warn,
@@ -66,10 +65,9 @@ pub enum LogLevel {
     Off,
 }
 
-#[derive(Deserialize, Debug, Clone, Copy, Default)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 #[serde(rename_all = "lowercase")]
 pub enum LogFormat {
-    #[default]
     Console,
     Json,
 }

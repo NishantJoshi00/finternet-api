@@ -17,7 +17,9 @@ pub fn router<S: Send + Sync + Clone + 'static>() -> Result<axum::Router<S>, Con
     Ok(router)
 }
 
-async fn create_supported_asset() -> impl IntoResponse {
+async fn create_supported_asset(Path(_token_manager_id): Path<String>) -> impl IntoResponse {
+    // in: asset_type, smart_contract!
+    // out:
     // ...
 }
 
@@ -25,14 +27,20 @@ async fn list_supported_assets() -> impl IntoResponse {
     // ...
 }
 
-async fn get_supported_asset(Path(supported_asset_id): Path<String>) -> impl IntoResponse {
+async fn get_supported_asset(
+    Path((_token_manager_id, _supported_asset_id)): Path<(String, String)>,
+) -> impl IntoResponse {
     // ...
 }
 
-async fn update_supported_asset(Path(supported_asset_id): Path<String>) -> impl IntoResponse {
+async fn update_supported_asset(
+    Path((_token_manager_id, _supported_asset_id)): Path<(String, String)>,
+) -> impl IntoResponse {
     // ...
 }
 
-async fn delete_supported_asset(Path(supported_asset_id): Path<String>) -> impl IntoResponse {
+async fn delete_supported_asset(
+    Path((_token_manager_id, _supported_asset_id)): Path<(String, String)>,
+) -> impl IntoResponse {
     // ...
 }

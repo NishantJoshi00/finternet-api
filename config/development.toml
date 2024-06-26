@@ -1,0 +1,7 @@
+[log]
+log_level = "debug"
+log_format = "console"
+
+[server]
+host = "127.0.0.1"
+port = 8080
