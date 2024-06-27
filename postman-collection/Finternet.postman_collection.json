@@ -1,0 +1,502 @@
+{
+	"info": {
+		"_postman_id": "4dc45d0b-fd88-47fb-b6ea-0dc5a3e00cb2",
+		"name": "Finternet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23503638"
+	},
+	"item": [
+		{
+			"name": "Create User 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"",
+							"pm.collectionVariables.set(\"user_id1\", jsonData.user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"123@abc.xyz\",\n  \"name\": \"John Doe\",\n  \"public_key\": \"0x1231231\",\n  \"ua_addr\": \"{{ua_addr1}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"",
+							"pm.collectionVariables.set(\"user_id2\", jsonData.user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"123@abc.xyz\",\n  \"name\": \"John Doe\",\n  \"public_key\": \"0x1231231\",\n  \"ua_addr\": \"{{ua_addr2}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Token Manager",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"",
+							"pm.collectionVariables.set(\"token_manager_id\", jsonData.token_manager_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"token_manager_name\": \"ICICI\",\n  \"public_key\": \"0x123123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/token_managers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"token_managers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Supported Asset",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"asset_type\": \"cash\",\n    \"smart_contract_refs\": \"0x12312313\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/token_managers/{{token_manager_id}}/supported_assets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"token_managers",
+						"{{token_manager_id}}",
+						"supported_assets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"",
+							"pm.collectionVariables.set(\"account_id1\", jsonData.account_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token_manager_id\": \"{{token_manager_id}}\",\n    \"account_name\": \"Local Debit\",\n    \"asset_type\": \"cash\",\n    \"token_manager_ref\": {\n        \"id\": \"123\",\n        \"token_manager_name\": \"ICICI\",\n        \"internal_addr\": \"09123\"\n    }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{{user_id1}}/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users",
+						"{{user_id1}}",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{{user_id1}}/accounts/{{account_id1}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users",
+						"{{user_id1}}",
+						"accounts",
+						"{{account_id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"",
+							"pm.collectionVariables.set(\"account_id2\", jsonData.account_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token_manager_id\": \"{{token_manager_id}}\",\n    \"account_name\": \"Local Debit\",\n    \"asset_type\": \"cash\",\n    \"token_manager_ref\": {\n        \"id\": \"123\",\n        \"token_manager_name\": \"ICICI\",\n        \"internal_addr\": \"09123\"\n    }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{{user_id2}}/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users",
+						"{{user_id2}}",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{{user_id2}}/accounts/{{account_id2}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users",
+						"{{user_id2}}",
+						"accounts",
+						"{{account_id2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Asset 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"",
+							"pm.collectionVariables.set(\"asset_id1\", jsonData.asset_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"cash\",\n    \"currency\": \"USD\",\n    \"amount\": 1000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{{user_id1}}/accounts/{{account_id1}}/assets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users",
+						"{{user_id1}}",
+						"accounts",
+						"{{account_id1}}",
+						"assets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer Asset",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"peer_ua_addr\": \"{{ua_addr2}}\",\n    \"account_id\": \"{{account_id2}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{{user_id1}}/accounts/{{account_id1}}/assets/{{asset_id1}}/asset:transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users",
+						"{{user_id1}}",
+						"accounts",
+						"{{account_id1}}",
+						"assets",
+						"{{asset_id1}}",
+						"asset:transfer"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "user_id1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "account_id1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "account_id2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ua_addr1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ua_addr2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token_manager_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "asset_id1",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
