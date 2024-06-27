@@ -2,10 +2,9 @@ use crate::storage::StorageInterface;
 
 #[derive(Clone)]
 pub struct AppState {
-    config: crate::config::Config,
-    storage: Box<dyn StorageInterface + Send + Sync>,
+    pub config: crate::config::Config,
+    pub storage: Box<dyn StorageInterface + Send + Sync>,
 }
-
 
 impl AppState {
     // pub fn new(config: crate::config::Config, storage: Box<dyn StorageInterface>) -> Self {
@@ -18,6 +17,4 @@ impl AppState {
             storage: Box::new(crate::imc::Storage::new()),
         }
     }
-
-
 }

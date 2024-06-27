@@ -1,13 +1,14 @@
-use axum::extract::Path;
+use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use serde::Deserialize;
 
-use crate::error::ConfigurationError;
+use crate::error::{ApiError, ConfigurationError};
+use crate::state::AppState;
 
 mod types;
 
-pub fn router<S: Send + Sync + Clone + 'static>() -> Result<axum::Router<S>, ConfigurationError> {
+pub fn router() -> Result<axum::Router<AppState>, ConfigurationError> {
     let router = axum::Router::new()
         .route("/", post(create_asset))
         .route(
@@ -28,11 +29,17 @@ enum Verb {
 }
 
 async fn create_asset(
+    State(app_state): State<AppState>,
     Path((_user_id, _account_id)): Path<(String, String)>,
-    axum::Json(asset): axum::Json<types::Asset>,
-) -> impl IntoResponse {
-    // in: asset_data
-    // ...
+    axum::Json(asset): axum::Json<types::MintAssetRequest>,
+) -> Result<impl IntoResponse, ApiError> {
+    match asset {
+        types::MintAssetRequest::Money { currency, amount } => {
+            // let asset_store = app_state.storage.get_user_interface().await.;
+        }
+    }
+
+    Err::<(), _>(ApiError::NotImplemented)
 }
 
 async fn get_asset(

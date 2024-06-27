@@ -3,8 +3,9 @@ use axum::response::IntoResponse;
 use axum::routing::{get, post};
 
 use crate::error::ConfigurationError;
+use crate::state::AppState;
 
-pub fn router<S: Send + Sync + Clone + 'static>() -> Result<axum::Router<S>, ConfigurationError> {
+pub fn router() -> Result<axum::Router<AppState>, ConfigurationError> {
     let router = axum::Router::new()
         .route("/", post(create_supported_asset).get(list_supported_assets))
         .route(

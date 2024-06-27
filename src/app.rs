@@ -4,11 +4,12 @@ use tokio::net::TcpListener;
 
 use crate::error::{ConfigurationError, SResult};
 use crate::logging::prelude::*;
+use crate::state::AppState;
 
 mod token_managers;
 mod users;
 
-pub fn router<S: Send + Sync + Clone + 'static>() -> SResult<axum::Router<S>, ConfigurationError> {
+pub fn router() -> SResult<axum::Router<AppState>, ConfigurationError> {
     let router = axum::Router::new()
         .nest("/v1/users", users::router()?)
         .nest("/v1/token_managers", token_managers::router()?)

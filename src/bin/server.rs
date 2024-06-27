@@ -14,7 +14,7 @@ async fn main() -> SResult<(), ConfigurationError> {
 
     info!("Config: {:#?}", config);
 
-    let router = finternet_app_api::app::router::<AppState>()?;
+    let router = finternet_app_api::app::router()?;
 
     let router = router.with_state(AppState::imc_backed(config.clone()));
 

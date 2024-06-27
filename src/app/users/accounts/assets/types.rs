@@ -1,10 +1,12 @@
 use serde::Deserialize;
 
+use crate::storage::types::Currency;
+
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type")]
-pub enum Asset {
-    Money { currency: String, amount: usize },
-    Property { lat: f64, lon: f64 },
+pub enum MintAssetRequest {
+    Money { currency: Currency, amount: u64 },
+    // Property { lat: f64, lon: f64 },
 }
 
 //

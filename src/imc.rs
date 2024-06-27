@@ -53,6 +53,7 @@ pub struct Account {
     pub token_manager_id: String,
     pub account_name: String,
     pub token_manager_ref: TokenManagerRef,
+    pub asset_type: AssetType,
     assets: AssetStore,
 }
 
@@ -72,9 +73,33 @@ pub struct AssetStore {
     map: Arc<RwLock<HashMap<String, Asset>>>,
 }
 
+impl AssetStore {
+    pub fn new() -> Self {
+        Self {
+            map: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+}
+
 pub struct Asset {
     pub id: String,
     pub asset_info: AssetInfo,
+}
+
+impl AccountStore {
+    pub fn new() -> Self {
+        Self {
+            map: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+}
+
+impl SupportedAssetStore {
+    pub fn new() -> Self {
+        Self {
+            map: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
 }
 
 impl Storage {
