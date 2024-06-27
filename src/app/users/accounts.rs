@@ -81,9 +81,32 @@ async fn list_accounts() -> impl IntoResponse {
     ApiError::NotImplemented
 }
 
-async fn get_account(Path((_user_id, _account_id)): Path<(String, String)>) -> impl IntoResponse {
-    // ...
-    ApiError::NotImplemented
+async fn get_account(
+    State(app_state): State<AppState>,
+    Path((user_id, account_id)): Path<(String, String)>,
+) -> Result<Json<types::FetchAccountResponse>, ApiError> {
+    let account_interface = app_state
+        .storage
+        .get_user_interface()
+        .await
+        .change_context(ApiError::FetchAccountError)
+        .map_err(log_convert)?
+        .get_account_interface(&user_id)
+        .await
+        .change_context(ApiError::FetchAccountError)
+        .map_err(log_convert)?;
+
+    let accounts = account_interface
+        .get_account(&account_id)
+        .await
+        .change_context(ApiError::FetchAccountError)
+        .map_err(log_convert)?;
+
+    Ok(Json(types::FetchAccountResponse {
+        account: accounts.0,
+        total_assets: accounts.1,
+    }))
+    // Err(ApiError::NotImplemented)
 }
 
 async fn update_account(

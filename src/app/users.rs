@@ -7,6 +7,8 @@ use error_stack::ResultExt;
 use crate::error::{log_convert, ApiError, ConfigurationError};
 use crate::state::AppState;
 
+use crate::logging::prelude::*;
+
 mod accounts;
 mod types;
 
@@ -39,6 +41,8 @@ async fn create_user(
         .map_err(log_convert)?;
 
     let output = types::CreateUserResponse { user_id, ua_addr };
+
+    info!("Created user: {:?}", output);
 
     Ok(Json(output))
 }

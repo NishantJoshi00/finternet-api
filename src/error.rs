@@ -74,6 +74,8 @@ pub enum ApiError {
     ListTokenManagersError,
     #[error("Account Creation Error")]
     AccountCreationError,
+    #[error("Failed while fetching the account")]
+    FetchAccountError,
     #[error("not implemented")]
     NotImplemented,
     #[error("Failed while creating assets")]
@@ -118,13 +120,17 @@ impl IntoResponse for ApiError {
             }
             ApiError::CreateSupportedAssetError => {
                 axum::response::Json("Failed while creating supported asset").into_response()
+            },
+            ApiError::FetchAccountError => {
+                axum::response::Json("Failed while fetching the account").into_response()
             }
         }
     }
 }
 
+#[track_caller]
 pub fn log_convert(e: error_stack::Report<ApiError>) -> ApiError {
-    error!(%e);
+    error!(?e);
 
     *e.current_context()
 }

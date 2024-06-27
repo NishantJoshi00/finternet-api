@@ -1,5 +1,7 @@
 use error_stack::{ensure, report};
 
+use crate::logging::prelude::*;
+
 use nanoid::nanoid;
 
 use crate::error::{SResult, StorageError};
@@ -77,6 +79,8 @@ impl UserInterface for UserStore {
         user_id: &str,
     ) -> SResult<Box<dyn AccountInterface + Send + Sync>, StorageError> {
         let store = self.map.read().await;
+
+        info!("{:?}", store.keys().collect::<Vec<&String>>());
 
         let user = store
             .get(user_id)

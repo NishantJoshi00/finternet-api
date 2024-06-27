@@ -51,7 +51,7 @@ async fn create_asset(
         .map_err(log_convert)?;
 
     let asset = match asset {
-        types::MintAssetRequest::Money { currency, amount } => {
+        types::MintAssetRequest::Cash { currency, amount } => {
             crate::storage::types::AssetInfo::Cash { currency, amount }
         }
     };

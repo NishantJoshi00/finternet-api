@@ -3,9 +3,9 @@ use serde::{Deserialize, Serialize};
 use crate::storage::types::{AssetInfo, Currency};
 
 #[derive(Debug, Deserialize)]
-#[serde(tag = "type")]
+#[serde(tag = "type", rename_all = "camelCase")]
 pub enum MintAssetRequest {
-    Money { currency: Currency, amount: u64 },
+    Cash { currency: Currency, amount: u64 },
     // Property { lat: f64, lon: f64 },
 }
 

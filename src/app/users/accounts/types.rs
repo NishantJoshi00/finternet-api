@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::storage::types::{AssetType, TokenManagerRef};
+use crate::storage::types::{Account, AssetType, TokenManagerRef, TotalAssets};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CreateAccountRequest {
@@ -27,4 +27,10 @@ pub struct CreateAccountResponse {
     pub token_manager_id: String,
     pub account_name: String,
     pub asset_type: AssetType,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FetchAccountResponse {
+    pub account: Account,
+    pub total_assets: TotalAssets,
 }

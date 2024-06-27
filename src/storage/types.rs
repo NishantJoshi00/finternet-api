@@ -15,6 +15,7 @@ pub enum AssetInfo {
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 // TODO: Use macros to generate the following enums
+#[serde(rename_all = "lowercase")]
 pub enum AssetType {
     Cash,
     // Property
@@ -43,6 +44,7 @@ pub struct TokenManagerInfo {
     pub token_manager_name: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Account {
     pub account_name: String,
     pub token_manager_id: String,
@@ -50,10 +52,12 @@ pub struct Account {
     pub token_manager_ref: TokenManagerRef,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TotalAssets {
     pub money: Money,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Money {
     pub currency: Currency,
     pub amount: u64,
