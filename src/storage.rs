@@ -28,6 +28,11 @@ pub trait UserInterface {
         user_id: &str,
     ) -> SResult<Box<dyn AccountInterface + Send + Sync>, StorageError>;
 
+    async fn get_account_interface_by_ua(
+        &self,
+        ua_addr: &str,
+    ) -> SResult<Box<dyn AccountInterface + Send + Sync>, StorageError>;
+
     async fn is_valid_ua_addr(&self, ua_addr: &str) -> SResult<bool, StorageError>;
 }
 
@@ -56,7 +61,6 @@ pub trait TokenManagerInterface {
 pub trait SupportedAssetInterface {
     async fn create_supported_asset(
         &self,
-        token_manager_id: &str,
         asset: types::SupportedAsset,
     ) -> SResult<String, StorageError>;
 
@@ -82,6 +86,8 @@ pub trait AccountInterface {
 
 #[async_trait::async_trait]
 pub trait AssetInterface {
+    async fn create_asset(&self, asset: types::AssetInfo) -> SResult<String, StorageError>;
+    async fn delete_asset(&self, asset_id: &str) -> SResult<types::AssetInfo, StorageError>;
     async fn list_assets(&self) -> SResult<Vec<types::AssetInfo>, StorageError>;
 }
 

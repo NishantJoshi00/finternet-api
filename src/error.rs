@@ -53,6 +53,9 @@ pub enum StorageError {
 
     #[error("Supported asset not found")]
     SupportedAssetNotFoundError,
+
+    #[error("Asset not found")]
+    AssetNotFoundError,
 }
 
 #[derive(thiserror::Error, Debug, Clone, Copy)]
@@ -63,12 +66,20 @@ pub enum ApiError {
     GetUserError,
     #[error("Error while creating a token manager")]
     CreateTokenManagerError,
+
+    #[error("Failed while creating supported asset")]
+    CreateSupportedAssetError,
+
     #[error("Error while listing the token managers")]
     ListTokenManagersError,
     #[error("Account Creation Error")]
     AccountCreationError,
     #[error("not implemented")]
     NotImplemented,
+    #[error("Failed while creating assets")]
+    CreateAssetError,
+    #[error("Failed to act on the asset")]
+    ActionAssetError,
 
     #[error("Asset type not supported by the token manager")]
     AssetTypeNotSupportedError,
@@ -99,6 +110,15 @@ impl IntoResponse for ApiError {
                 axum::response::Json("Asset type not supported by the token manager")
                     .into_response()
             }
+            ApiError::CreateAssetError => {
+                axum::response::Json("Failed while creating assets").into_response()
+            }
+            ApiError::ActionAssetError => {
+                axum::response::Json("Failed to act on the asset").into_response()
+            }
+            ApiError::CreateSupportedAssetError => {
+                axum::response::Json("Failed while creating supported asset").into_response()
+            }
         }
     }
 }
@@ -106,5 +126,5 @@ impl IntoResponse for ApiError {
 pub fn log_convert(e: error_stack::Report<ApiError>) -> ApiError {
     error!(%e);
 
-    e.current_context().clone()
+    *e.current_context()
 }

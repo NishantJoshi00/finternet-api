@@ -85,6 +85,20 @@ impl UserInterface for UserStore {
         Ok(Box::new(user.accounts.clone()))
     }
 
+    async fn get_account_interface_by_ua(
+        &self,
+        ua_addr: &str,
+    ) -> SResult<Box<dyn AccountInterface + Send + Sync>, StorageError> {
+        let store = self.map.read().await;
+
+        let user = store
+            .values()
+            .find(|user| user.ua_addr == ua_addr)
+            .ok_or(report!(StorageError::UserNotFoundError))?;
+
+        Ok(Box::new(user.accounts.clone()))
+    }
+
     async fn is_valid_ua_addr(&self, ua_addr: &str) -> SResult<bool, StorageError> {
         let set = self.set.read().await;
 
@@ -130,7 +144,7 @@ impl AccountInterface for AccountStore {
         let store = self.map.read().await;
 
         let account = store
-            .get(account_id.clone())
+            .get(account_id)
             .ok_or(report!(StorageError::AccountNotFoundError))?;
 
         let all_assets: Vec<AssetInfo> = self
@@ -184,6 +198,29 @@ impl AssetInterface for AssetStore {
             .map(|value| &value.asset_info)
             .cloned()
             .collect())
+    }
+
+    async fn create_asset(&self, asset: AssetInfo) -> SResult<String, StorageError> {
+        let asset_id = nanoid!(5);
+
+        let new_asset = Asset {
+            id: asset_id.clone(),
+            asset_info: asset,
+        };
+
+        self.map.write().await.insert(asset_id.clone(), new_asset);
+
+        Ok(asset_id)
+    }
+
+    async fn delete_asset(&self, asset_id: &str) -> SResult<AssetInfo, StorageError> {
+        let mut store = self.map.write().await;
+
+        let asset = store
+            .remove(asset_id)
+            .ok_or(report!(StorageError::AssetNotFoundError))?;
+
+        Ok(asset.asset_info)
     }
 }
 
@@ -258,7 +295,6 @@ impl TokenManagerInterface for TokenManagerStore {
 impl SupportedAssetInterface for SupportedAssetStore {
     async fn create_supported_asset(
         &self,
-        token_manager_id: &str,
         asset: crate::storage::types::SupportedAsset,
     ) -> SResult<String, StorageError> {
         let supported_asset_id = nanoid!(5);

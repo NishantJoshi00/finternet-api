@@ -14,7 +14,7 @@ pub struct Config {
     pub server_config: ServerSettings,
     // #[cfg(feature = "aws-kms")]
     // pub aws_kms: kms::AwsKmsConfig,
-    pub imc_backup: BackupConfig,
+    // pub imc_backup: BackupConfig,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -75,11 +75,11 @@ impl Config {
             .build()
             .change_context(ConfigurationError::ConfigError)?;
 
-        Ok(serde_path_to_error::deserialize(config)
+        serde_path_to_error::deserialize(config)
             .map_err(|error| {
                 error!("Unable to deserialize application configuration: {error}");
                 error.into_inner()
             })
-            .change_context(ConfigurationError::ParseError)?)
+            .change_context(ConfigurationError::ParseError)
     }
 }

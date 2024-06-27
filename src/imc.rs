@@ -1,7 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
-use error_stack::ResultExt;
 use tokio::sync::RwLock;
 
 use crate::config::BackupConfig;
@@ -81,6 +80,12 @@ impl AssetStore {
     }
 }
 
+impl Default for AssetStore {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct Asset {
     pub id: String,
     pub asset_info: AssetInfo,
@@ -114,11 +119,50 @@ impl Storage {
             },
         }
     }
-    pub fn setup_disk_backup(&self, config: &BackupConfig) -> SResult<(), StorageError> {
+    pub fn setup_disk_backup(&self, _config: &BackupConfig) -> SResult<(), StorageError> {
         // let path = config.path;
         // let user_path = path.join("users.bin");
         // let token_manager_path = path.join("token_managers.bin");
         //
         todo!()
+    }
+}
+
+impl Default for Storage {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for UserStore {
+    fn default() -> Self {
+        Self {
+            map: Arc::new(RwLock::new(HashMap::new())),
+            set: Arc::new(RwLock::new(HashSet::new())),
+        }
+    }
+}
+
+impl Default for TokenManagerStore {
+    fn default() -> Self {
+        Self {
+            map: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+}
+
+impl Default for AccountStore {
+    fn default() -> Self {
+        Self {
+            map: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+}
+
+impl Default for SupportedAssetStore {
+    fn default() -> Self {
+        Self {
+            map: Arc::new(RwLock::new(HashMap::new())),
+        }
     }
 }

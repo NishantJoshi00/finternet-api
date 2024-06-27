@@ -1,9 +1,11 @@
 use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
+use axum::Json;
+use error_stack::ResultExt;
 use serde::Deserialize;
 
-use crate::error::{ApiError, ConfigurationError};
+use crate::error::{log_convert, ApiError, ConfigurationError};
 use crate::state::AppState;
 
 mod types;
@@ -24,22 +26,48 @@ pub fn router() -> Result<axum::Router<AppState>, ConfigurationError> {
 enum Verb {
     #[serde(rename = ":transfer")]
     Transfer,
-    #[serde(rename = ":nominate")]
-    Nominate,
+    // #[serde(rename = ":nominate")]
+    // Nominate,
 }
 
 async fn create_asset(
     State(app_state): State<AppState>,
-    Path((_user_id, _account_id)): Path<(String, String)>,
+    Path((user_id, account_id)): Path<(String, String)>,
     axum::Json(asset): axum::Json<types::MintAssetRequest>,
 ) -> Result<impl IntoResponse, ApiError> {
-    match asset {
-        types::MintAssetRequest::Money { currency, amount } => {
-            // let asset_store = app_state.storage.get_user_interface().await.;
-        }
-    }
+    let asset_store = app_state
+        .storage
+        .get_user_interface()
+        .await
+        .change_context(ApiError::CreateAssetError)
+        .map_err(log_convert)?
+        .get_account_interface(&user_id)
+        .await
+        .change_context(ApiError::CreateAssetError)
+        .map_err(log_convert)?
+        .get_asset_interface(&account_id)
+        .await
+        .change_context(ApiError::CreateAssetError)
+        .map_err(log_convert)?;
 
-    Err::<(), _>(ApiError::NotImplemented)
+    let asset = match asset {
+        types::MintAssetRequest::Money { currency, amount } => {
+            crate::storage::types::AssetInfo::Cash { currency, amount }
+        }
+    };
+
+    let asset_id = asset_store
+        .create_asset(asset.clone())
+        .await
+        .change_context(ApiError::CreateAssetError)
+        .map_err(log_convert)?;
+
+    Ok(axum::response::Json(types::MintAssetResponse {
+        asset_id,
+        asset_info: asset,
+    }))
+
+    // Err::<(), _>(ApiError::NotImplemented)
 }
 
 async fn get_asset(
@@ -61,7 +89,55 @@ async fn delete_asset(
 }
 
 async fn action_asset(
-    Path((_user_id, _account_id, _asset_id, _verb)): Path<(String, String, String, Verb)>,
-) -> impl IntoResponse {
-    format!("verb: {:#?}", _verb)
+    State(app_state): State<AppState>,
+    Path((user_id, account_id, asset_id, verb)): Path<(String, String, String, Verb)>,
+    Json(action): Json<types::VerbRequest>,
+) -> Result<impl IntoResponse, ApiError> {
+    match verb {
+        Verb::Transfer => {
+            let my_asset_store = app_state
+                .storage
+                .get_user_interface()
+                .await
+                .change_context(ApiError::ActionAssetError)
+                .map_err(log_convert)?
+                .get_account_interface(&user_id)
+                .await
+                .change_context(ApiError::ActionAssetError)
+                .map_err(log_convert)?
+                .get_asset_interface(&account_id)
+                .await
+                .change_context(ApiError::ActionAssetError)
+                .map_err(log_convert)?;
+
+            let peer_asset_store = app_state
+                .storage
+                .get_user_interface()
+                .await
+                .change_context(ApiError::ActionAssetError)
+                .map_err(log_convert)?
+                .get_account_interface_by_ua(&action.peer_ua_addr)
+                .await
+                .change_context(ApiError::ActionAssetError)
+                .map_err(log_convert)?
+                .get_asset_interface(&action.account_id)
+                .await
+                .change_context(ApiError::ActionAssetError)
+                .map_err(log_convert)?;
+
+            let output = my_asset_store
+                .delete_asset(&asset_id)
+                .await
+                .change_context(ApiError::ActionAssetError)
+                .map_err(log_convert)?;
+
+            let output = peer_asset_store
+                .create_asset(output)
+                .await
+                .change_context(ApiError::ActionAssetError)
+                .map_err(log_convert)?;
+
+            Ok(axum::response::Json(output))
+        }
+    }
 }

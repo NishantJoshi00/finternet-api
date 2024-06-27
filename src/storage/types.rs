@@ -9,7 +9,7 @@ pub struct TokenManagerRef {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum AssetInfo {
-    Cash {  currency: Currency,  amount: u64 },
+    Cash { currency: Currency, amount: u64 },
     // Property {}
 }
 
@@ -70,6 +70,13 @@ impl TotalAssets {
     }
 }
 
+impl Default for TotalAssets {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SupportedAsset {
     pub asset_type: AssetType,
     pub smart_contract_refs: Vec<u8>,
