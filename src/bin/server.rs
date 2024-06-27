@@ -1,5 +1,6 @@
 use error_stack::ResultExt;
 use finternet_app_api::error::{ConfigurationError, SResult};
+use finternet_app_api::state::AppState;
 use finternet_app_api::{logging, service_name};
 use tokio::net::TcpListener;
 
@@ -13,7 +14,9 @@ async fn main() -> SResult<(), ConfigurationError> {
 
     info!("Config: {:#?}", config);
 
-    let router = finternet_app_api::app::router::<()>()?;
+    let router = finternet_app_api::app::router::<AppState>()?;
+
+    let router = router.with_state(AppState::imc_backed(config.clone()));
 
     finternet_app_api::app::start_server(
         router,

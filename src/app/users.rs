@@ -1,10 +1,12 @@
 use axum::extract::Path;
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
+use axum::Json;
 
 use crate::error::ConfigurationError;
 
 mod accounts;
+mod types;
 
 pub fn router<S: Send + Sync + Clone + 'static>() -> Result<axum::Router<S>, ConfigurationError> {
     let router = axum::Router::new()
@@ -18,11 +20,11 @@ pub fn router<S: Send + Sync + Clone + 'static>() -> Result<axum::Router<S>, Con
     Ok(router)
 }
 
-async fn create_user() -> impl IntoResponse {
+async fn create_user(Json(user): Json<types::CreateUserRequest>) -> impl IntoResponse {
     // in: email, name, public_key, ua_addr 
     // out: 
-    "create_user"
-    // ...
+
+
 }
 
 async fn get_user(Path(_user_id): Path<String>) -> impl IntoResponse {

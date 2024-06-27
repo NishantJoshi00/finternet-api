@@ -23,6 +23,9 @@ tracing-subscriber = { version = "0.3.18", default-features = true, features = [
   "registry",
 ] }
 tracing-appender = "0.2.3"
+async-trait = "0.1.80"
+bincode = "1.3.3"
+dyn-clone = "1.0.17"
 
 
 [build-dependencies]

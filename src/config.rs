@@ -14,12 +14,18 @@ pub struct Config {
     pub server_config: ServerSettings,
     // #[cfg(feature = "aws-kms")]
     // pub aws_kms: kms::AwsKmsConfig,
+    pub imc_backup: BackupConfig,
 }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct ServerSettings {
     pub port: u16,
     pub host: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct BackupConfig {
+    pub path: PathBuf,
 }
 
 #[derive(Debug, strum::Display, strum::EnumString, Clone, Copy)]

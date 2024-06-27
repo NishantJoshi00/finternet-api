@@ -20,3 +20,27 @@ pub enum ConfigurationError {
 }
 
 pub type SResult<T, E> = error_stack::Result<T, E>;
+
+#[derive(thiserror::Error, Debug)]
+pub enum StorageError {
+    #[error("Error while getting the account interface")]
+    AccountInterfaceError,
+
+    #[error("Error while getting the supported asset interface")]
+    SupportedAssetInterfaceError,
+
+    #[error("Error while getting the asset interface")]
+    AssetInterfaceError,
+
+    #[error("User not found")]
+    UserNotFoundError,
+
+    #[error("Account not found")]
+    AccountNotFoundError,
+    
+    #[error("Token manager not found")]
+    TokenManagerNotFoundError,
+
+    #[error("Failed while deserializing the user data backup")]
+    UserDeserializationError,
+}
