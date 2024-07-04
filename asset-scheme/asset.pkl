@@ -1,0 +1,4 @@
+module Asset
+
+
+assetType: "Money" | "Property"

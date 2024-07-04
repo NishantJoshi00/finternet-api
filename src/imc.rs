@@ -30,7 +30,6 @@ pub struct User {
     pub id: String,
     pub name: String,
     pub email: String,
-    pub public_key: String,
     pub ua_addr: String,
     accounts: AccountStore,
 }
@@ -50,6 +49,7 @@ pub struct AccountStore {
 pub struct Account {
     pub id: String,
     pub token_manager_id: String,
+    pub public_key: String,
     pub account_name: String,
     pub token_manager_ref: TokenManagerRef,
     pub asset_type: AssetType,

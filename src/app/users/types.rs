@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 pub(super) struct CreateUserRequest {
     pub email: String,
     pub name: String,
-    pub public_key: String,
     pub ua_addr: String,
 }
 
@@ -28,7 +27,6 @@ impl From<CreateUserRequest> for crate::storage::types::User {
         crate::storage::types::User {
             email: value.email,
             name: value.name,
-            public_key: value.public_key,
             ua_addr: value.ua_addr,
         }
     }

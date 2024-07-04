@@ -30,7 +30,6 @@ pub enum Currency {
 pub struct User {
     pub email: String,
     pub name: String,
-    pub public_key: String,
     pub ua_addr: String,
 }
 
@@ -49,6 +48,7 @@ pub struct Account {
     pub account_name: String,
     pub token_manager_id: String,
     pub asset_type: AssetType,
+    pub public_key: String,
     pub token_manager_ref: TokenManagerRef,
 }
 

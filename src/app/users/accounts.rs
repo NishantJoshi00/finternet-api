@@ -102,9 +102,19 @@ async fn get_account(
         .change_context(ApiError::FetchAccountError)
         .map_err(log_convert)?;
 
+    let balance = assets::external::get_balance(accounts.0.public_key.clone())
+        .await
+        .change_context(ApiError::FetchAccountError)
+        .map_err(log_convert)?;
+
     Ok(Json(types::FetchAccountResponse {
         account: accounts.0,
-        total_assets: accounts.1,
+        total_assets: crate::storage::types::TotalAssets {
+            money: crate::storage::types::Money {
+                currency: crate::storage::types::Currency::USD,
+                amount: balance as u64,
+            },
+        },
     }))
     // Err(ApiError::NotImplemented)
 }

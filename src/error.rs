@@ -21,6 +21,21 @@ pub enum ConfigurationError {
 
     #[error("Error while binding the server")]
     ServerBindError,
+
+    #[error("Failed while setting up presets")]
+    PresetError,
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum ApiClientError {
+    #[error("Error while sending the request")]
+    RequestError,
+
+    #[error("Non-success status code")]
+    NonSuccessStatusError,
+
+    #[error("Failed while deserializing the response")]
+    DeserializationError,
 }
 
 pub type SResult<T, E> = error_stack::Result<T, E>;
@@ -83,6 +98,9 @@ pub enum ApiError {
     #[error("Failed to act on the asset")]
     ActionAssetError,
 
+    #[error("Failure while deleting the asset")]
+    DeleteAssetError,
+
     #[error("Asset type not supported by the token manager")]
     AssetTypeNotSupportedError,
 }
@@ -120,9 +138,12 @@ impl IntoResponse for ApiError {
             }
             ApiError::CreateSupportedAssetError => {
                 axum::response::Json("Failed while creating supported asset").into_response()
-            },
+            }
             ApiError::FetchAccountError => {
                 axum::response::Json("Failed while fetching the account").into_response()
+            }
+            ApiError::DeleteAssetError => {
+                axum::response::Json("Failure while deleting the asset").into_response()
             }
         }
     }

@@ -15,11 +15,23 @@ pub struct MintAssetResponse {
     pub asset_info: AssetInfo,
 }
 
+#[derive(Debug, Serialize)]
+pub struct MintResponse {}
+
 #[derive(Debug, Deserialize)]
 pub struct VerbRequest {
     pub peer_ua_addr: String,
     pub account_id: String,
+    pub amount: usize,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct DeleteRequest {
+    pub asset_info: AssetInfo,
+}
+
+#[derive(Debug, Serialize)]
+pub struct DeleteResponse {}
 
 //
 // {

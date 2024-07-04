@@ -388,6 +388,53 @@
 			"response": []
 		},
 		{
+			"name": "Delete Asset",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"",
+							"pm.collectionVariables.set(\"asset_id1\", jsonData.asset_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"asset_info\": {\n        \"Cash\": {\n            \"currency\": \"USD\",\n            \"amount\": 100\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{{user_id1}}/accounts/{{account_id1}}/assets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users",
+						"{{user_id1}}",
+						"accounts",
+						"{{account_id1}}",
+						"assets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Transfer Asset",
 			"event": [
 				{
@@ -406,7 +453,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"peer_ua_addr\": \"{{ua_addr2}}\",\n    \"account_id\": \"{{account_id2}}\"\n}",
+					"raw": "{\n    \"peer_ua_addr\": \"{{ua_addr2}}\",\n    \"account_id\": \"{{account_id2}}\",\n    \"amount\": 100\n}",
 					"options": {
 						"raw": {
 							"language": "json"

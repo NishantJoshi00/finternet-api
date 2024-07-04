@@ -51,7 +51,6 @@ impl UserInterface for UserStore {
             email: user.email,
             id: user_id.clone(),
             name: user.name,
-            public_key: user.public_key,
         };
 
         self.map.write().await.insert(user_id.clone(), new_user);
@@ -70,7 +69,6 @@ impl UserInterface for UserStore {
             ua_addr: user.ua_addr.clone(),
             email: user.email.clone(),
             name: user.name.clone(),
-            public_key: user.public_key.clone(),
         })
     }
 
@@ -125,6 +123,7 @@ impl AccountInterface for AccountStore {
             token_manager_id: acc.token_manager_id,
             token_manager_ref: acc.token_manager_ref,
             asset_type: acc.asset_type,
+            public_key: acc.public_key,
         };
 
         self.map
@@ -173,6 +172,7 @@ impl AccountInterface for AccountStore {
                 token_manager_id: account.token_manager_id.clone(),
                 token_manager_ref: account.token_manager_ref.clone(),
                 asset_type: account.asset_type.clone(),
+                public_key: account.public_key.clone(),
             },
             output,
         ))
