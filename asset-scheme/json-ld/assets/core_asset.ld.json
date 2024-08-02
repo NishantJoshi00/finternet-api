@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "value": "http://www.w3.org/2001/XMLSchema#string",
+    "policies": {
+      "@container": "@index"
+      "@id": "../policy.ld.json"
+    },
+    "issuer": "../entity.ld.json",
+    "ledger": "../ledger.ld.json"
+  }
+}

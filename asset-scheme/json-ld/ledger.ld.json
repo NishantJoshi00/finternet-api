@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "name": "http://schema.org/name",
+    "description": "http://schema.org/description",
+    "image": {
+      "@id": "http://schema.org/image",
+      "@type": "@id"
+    },
+    "geo": "http://schema.org/geo",
+    "website": {
+      "@id": "http://schema.org/url",
+      "@type": "@id"
+    },
+    "links": {
+      "@id": "http://schema.org/url",
+      "@type": "@id"
+    },
+    "poc": {
+      "@container": "@list",
+      "@id": "./entity.ld.json"
+    }
+  }
+}

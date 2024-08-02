@@ -1,0 +1,227 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/assets/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@graph": [
+    {
+      "@id": "Asset",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Base class for all assets",
+      "rdfs:subClassOf": {
+        "@id": "schema:Thing"
+      },
+      "properties": [
+        {
+          "@id": "id",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string"
+        },
+        {
+          "@id": "isLocked",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:boolean"
+        },
+        {
+          "@id": "ledger",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string"
+        }
+      ]
+    },
+    {
+      "@id": "FungibleAsset",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Asset that is interchangeable",
+      "rdfs:subClassOf": {
+        "@id": "Asset"
+      },
+      "properties": [
+        {
+          "@id": "value",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:integer"
+        }
+      ]
+    },
+    {
+      "@id": "NonFungibleAsset",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Asset that is unique",
+      "rdfs:subClassOf": {
+        "@id": "Asset"
+      },
+      "properties": [
+        {
+          "@id": "signature",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string"
+        }
+      ]
+    },
+    {
+      "@id": "Money",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Fungible asset representing currency",
+      "rdfs:subClassOf": {
+        "@id": "FungibleAsset"
+      },
+      "properties": [
+        {
+          "@id": "currency",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string"
+        }
+      ]
+    },
+    {
+      "@id": "Property",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Non-fungible asset representing real estate",
+      "rdfs:subClassOf": {
+        "@id": "NonFungibleAsset"
+      },
+      "properties": [
+        {
+          "@id": "latitude",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:float"
+        },
+        {
+          "@id": "longitude",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:float"
+        },
+        {
+          "@id": "size",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:integer"
+        }
+      ]
+    },
+    {
+      "@id": "RBIMoney",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Indian Rupee issued by Reserve Bank of India",
+      "rdfs:subClassOf": {
+        "@id": "Money"
+      },
+      "properties": [
+        {
+          "@id": "issuer",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "RBI"
+        },
+        {
+          "@id": "currency",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "INR"
+        }
+      ]
+    },
+    {
+      "@id": "BRLMoney",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Brazilian Real",
+      "rdfs:subClassOf": {
+        "@id": "Money"
+      },
+      "properties": [
+        {
+          "@id": "issuer",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "BRL"
+        },
+        {
+          "@id": "currency",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "BRL"
+        }
+      ]
+    },
+    {
+      "@id": "IndianProperty",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Property located in India",
+      "rdfs:subClassOf": {
+        "@id": "Property"
+      },
+      "properties": [
+        {
+          "@id": "country",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "India"
+        }
+      ]
+    },
+    {
+      "@id": "BrazilianProperty",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Property located in Brazil",
+      "rdfs:subClassOf": {
+        "@id": "Property"
+      },
+      "properties": [
+        {
+          "@id": "country",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "Brazil"
+        }
+      ]
+    },
+    {
+      "@id": "ICICIMoney",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Indian Rupee regulated by ICICI",
+      "rdfs:subClassOf": {
+        "@id": "RBIMoney"
+      },
+      "properties": [
+        {
+          "@id": "regulator",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "ICICI"
+        }
+      ]
+    },
+    {
+      "@id": "JKProperty",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Property located in Jammu and Kashmir, India",
+      "rdfs:subClassOf": {
+        "@id": "IndianProperty"
+      },
+      "properties": [
+        {
+          "@id": "state",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "Jammu and Kashmir"
+        }
+      ]
+    },
+    {
+      "@id": "KarnatakaProperty",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Property located in Karnataka, India",
+      "rdfs:subClassOf": {
+        "@id": "IndianProperty"
+      },
+      "properties": [
+        {
+          "@id": "state",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "Karnataka"
+        }
+      ]
+    }
+  ]
+}

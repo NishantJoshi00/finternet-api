@@ -1,0 +1,15 @@
+{
+  "@context": {
+    "name": "http://schema.org/name",
+    "description": "http://schema.org/description",
+    "image": {
+      "@id": "http://schema.org/image",
+      "@type": "@id"
+    },
+    "policies": {
+      "@container": "@list",
+      "@id": "./ledger_policy.ld.json"
+    }
+  },
+  }
+}

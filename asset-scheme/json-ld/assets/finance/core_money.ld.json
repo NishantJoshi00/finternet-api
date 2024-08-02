@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "@type": "../core_asset.ld.json",
+    "currency": "http://purl.org/net/c4dm/event.owl#Currency",
+    "value": "http://purl.org/goodrelations/v1#hasCurrencyValue",
+    "issuer": "../../entity.ld.json",
+    "country": "http://purl.org/goodrelations/v1#hasCountry"
+  }
+}

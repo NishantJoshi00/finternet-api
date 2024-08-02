@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "name": "http://schema.org/name",
+    "description": "http://schema.org/description",
+    "issuer": "./entity.ld.json",
+    "ledger": "./ledger.ld.json",
+    "function": "http://www.w3.org/2001/XMLSchema#string",
+    "source_code": "http://schema.org/codeRepository",
+    "enrolled": {
+      "@container": "@set",
+      "@id": "./entity.ld.json"
+    }
+  }
+}

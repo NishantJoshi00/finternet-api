@@ -1,0 +1,412 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/assets/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema": "http://schema.org/"
+  },
+  "@graph": [
+    {
+      "@id": "Asset",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Base class for all assets",
+      "rdfs:subClassOf": {
+        "@id": "schema:Thing"
+      },
+      "properties": [
+        {
+          "@id": "id",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string"
+        },
+        {
+          "@id": "isLocked",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:boolean"
+        },
+        {
+          "@id": "ledger",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string"
+        }
+      ],
+      "executionInterface": "AssetAction"
+    },
+    {
+      "@id": "FungibleAsset",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Asset that is interchangeable",
+      "rdfs:subClassOf": {
+        "@id": "Asset"
+      },
+      "properties": [
+        {
+          "@id": "value",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:integer"
+        }
+      ],
+      "executionInterface": "IFungibleAsset"
+    },
+    {
+      "@id": "NonFungibleAsset",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Asset that is unique",
+      "rdfs:subClassOf": {
+        "@id": "Asset"
+      },
+      "properties": [
+        {
+          "@id": "signature",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string"
+        }
+      ],
+      "executionInterface": "INonFungibleAsset"
+    },
+    {
+      "@id": "Money",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Fungible asset representing currency",
+      "rdfs:subClassOf": {
+        "@id": "FungibleAsset"
+      },
+      "properties": [
+        {
+          "@id": "currency",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string"
+        }
+      ],
+      "executionInterface": "MoneyAction"
+    },
+    {
+      "@id": "Property",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Non-fungible asset representing real estate",
+      "rdfs:subClassOf": {
+        "@id": "NonFungibleAsset"
+      },
+      "properties": [
+        {
+          "@id": "latitude",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:float"
+        },
+        {
+          "@id": "longitude",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:float"
+        },
+        {
+          "@id": "size",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:integer"
+        }
+      ],
+      "executionInterface": "PropertyAction"
+    },
+    {
+      "@id": "RBIMoney",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Indian Rupee issued by Reserve Bank of India",
+      "rdfs:subClassOf": {
+        "@id": "Money"
+      },
+      "properties": [
+        {
+          "@id": "issuer",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "RBI"
+        },
+        {
+          "@id": "currency",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "INR"
+        }
+      ],
+      "executionInterface": "RBIAction"
+    },
+    {
+      "@id": "BRLMoney",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Brazilian Real",
+      "rdfs:subClassOf": {
+        "@id": "Money"
+      },
+      "properties": [
+        {
+          "@id": "issuer",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "BRL"
+        },
+        {
+          "@id": "currency",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "BRL"
+        }
+      ],
+      "executionInterface": "BRLAction"
+    },
+    {
+      "@id": "IndianProperty",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Property located in India",
+      "rdfs:subClassOf": {
+        "@id": "Property"
+      },
+      "properties": [
+        {
+          "@id": "country",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "India"
+        }
+      ],
+      "executionInterface": "IndianPropertyAction"
+    },
+    {
+      "@id": "BrazilianProperty",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Property located in Brazil",
+      "rdfs:subClassOf": {
+        "@id": "Property"
+      },
+      "properties": [
+        {
+          "@id": "country",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "Brazil"
+        }
+      ],
+      "executionInterface": "BrazilianPropertyAction"
+    },
+    {
+      "@id": "ICICIMoney",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Indian Rupee regulated by ICICI",
+      "rdfs:subClassOf": {
+        "@id": "RBIMoney"
+      },
+      "properties": [
+        {
+          "@id": "regulator",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "ICICI"
+        }
+      ],
+      "executionInterface": "ICICIAction"
+    },
+    {
+      "@id": "JKProperty",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Property located in Jammu and Kashmir, India",
+      "rdfs:subClassOf": {
+        "@id": "IndianProperty"
+      },
+      "properties": [
+        {
+          "@id": "state",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "Jammu and Kashmir"
+        }
+      ],
+      "executionInterface": "JKPropertyAction"
+    },
+    {
+      "@id": "KarnatakaProperty",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Property located in Karnataka, India",
+      "rdfs:subClassOf": {
+        "@id": "IndianProperty"
+      },
+      "properties": [
+        {
+          "@id": "state",
+          "@type": "rdf:Property",
+          "rdfs:range": "xsd:string",
+          "rdfs:value": "Karnataka"
+        }
+      ],
+      "executionInterface": "KarnatakaPropertyAction"
+    },
+    {
+      "@id": "AssetAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for basic asset actions",
+      "methods": [
+        {
+          "@id": "send",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Send asset to another participant"
+        },
+        {
+          "@id": "lock",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Lock the asset"
+        },
+        {
+          "@id": "unlock",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Unlock the asset"
+        }
+      ]
+    },
+    {
+      "@id": "MoneyAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for money-related actions",
+      "rdfs:subClassOf": {
+        "@id": "AssetAction"
+      },
+      "methods": [
+        {
+          "@id": "sendMoney",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Send a specific amount of money to another participant"
+        },
+        {
+          "@id": "lendMoney",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Lend a specific amount of money to another participant"
+        }
+      ]
+    },
+    {
+      "@id": "PropertyAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for property-related actions",
+      "rdfs:subClassOf": {
+        "@id": "AssetAction"
+      },
+      "methods": [
+        {
+          "@id": "sell",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Sell the property to another participant"
+        },
+        {
+          "@id": "buy",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Buy the property from another participant"
+        },
+        {
+          "@id": "lease",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Lease the property to another participant"
+        }
+      ]
+    },
+    {
+      "@id": "RBIAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for RBI money-related actions",
+      "rdfs:subClassOf": {
+        "@id": "MoneyAction"
+      },
+      "methods": [
+        {
+          "@id": "issueMoney",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Issue a specific amount of RBI money"
+        }
+      ]
+    },
+    {
+      "@id": "BRLAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for BRL money-related actions",
+      "rdfs:subClassOf": {
+        "@id": "MoneyAction"
+      },
+      "methods": [
+        {
+          "@id": "issueMoney",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Issue a specific amount of BRL money"
+        }
+      ]
+    },
+    {
+      "@id": "ICICIAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for ICICI money-related actions",
+      "rdfs:subClassOf": {
+        "@id": "RBIAction"
+      },
+      "methods": [
+        {
+          "@id": "regulateMoney",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Regulate RBI money as ICICI"
+        }
+      ]
+    },
+    {
+      "@id": "IndianPropertyAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for Indian property-related actions",
+      "rdfs:subClassOf": {
+        "@id": "PropertyAction"
+      },
+      "methods": [
+        {
+          "@id": "register",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Register the property in India"
+        }
+      ]
+    },
+    {
+      "@id": "BrazilianPropertyAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for Brazilian property-related actions",
+      "rdfs:subClassOf": {
+        "@id": "PropertyAction"
+      },
+      "methods": [
+        {
+          "@id": "register",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Register the property in Brazil"
+        }
+      ]
+    },
+    {
+      "@id": "JKPropertyAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for Jammu and Kashmir property-related actions",
+      "rdfs:subClassOf": {
+        "@id": "IndianPropertyAction"
+      },
+      "methods": [
+        {
+          "@id": "register",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Register the property in Jammu and Kashmir"
+        }
+      ]
+    },
+    {
+      "@id": "KarnatakaPropertyAction",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Interface for Karnataka property-related actions",
+      "rdfs:subClassOf": {
+        "@id": "IndianPropertyAction"
+      },
+      "methods": [
+        {
+          "@id": "register",
+          "@type": "rdf:Property",
+          "rdfs:comment": "Register the property in Karnataka"
+        }
+      ]
+    }
+  ]
+}

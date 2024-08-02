@@ -1,0 +1,20 @@
+{
+  "@context": {
+    "name": "http://schema.org/name",
+    "contact": "http://schema.org/contactPoint",
+    "website": "http://schema.org/url",
+    "policies": {
+      "@container": "@list",
+      "@id": "./ledger_policy.ld.json"
+    },
+    "public_key": {
+      "@id": "http://schema.org/publicKey",
+      "@type": "http://schema.org/Text"
+    },
+    "roles": {
+      "@container": "@list",
+      "@id": "./role.ld.json"
+    },
+  }
+  }
+}

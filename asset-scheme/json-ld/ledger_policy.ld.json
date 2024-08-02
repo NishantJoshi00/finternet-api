@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "ledger": "./ledger.ld.json",
+    "asset": "./assets/core_asset.ld.json",
+    "policies": {
+      "@container": "@list",
+      "@id": "./policy.ld.json"
+    }
+  }
+}
