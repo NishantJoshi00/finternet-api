@@ -19,7 +19,7 @@ paths:
       tags:
         - users
       summary: Create a user
-      description: TBD
+      description: This route is used to create a user on the ledger
       requestBody:
         content:
           application/json:
@@ -40,7 +40,7 @@ paths:
       tags:
         - users
       summary: Get a user
-      description: TBD
+      description: This route is used to get a user from the ledger
       responses:
         "200":
           description: "User found successfully"
@@ -59,7 +59,7 @@ paths:
       tags:
         - users
       summary: Update a user
-      description: TBD
+      description: This route is used to update a user on the ledger
       requestBody:
         content:
           application/json:
@@ -79,7 +79,7 @@ paths:
       tags:
         - users
       summary: Delete a user
-      description: TBD
+      description: This route is used to delete a user from the ledger
       responses:
         "200":
           description: "User deleted successfully"
@@ -90,7 +90,7 @@ paths:
       tags:
         - token manager admin
       summary: Create a token manager
-      description: TBD
+      description: This route is used to create a token manager on the ledger
       requestBody:
         content:
           application/json:
@@ -103,7 +103,7 @@ paths:
       tags:
         - token manager admin
       summary: Get all token managers as a list
-      description: TBD
+      description: This route is used to get all token managers from the ledger
       responses:
         "200":
           description: "Token managers found successfully"
@@ -125,7 +125,7 @@ paths:
       tags:
         - token manager admin
       summary: Get a token manager
-      description: TBD
+      description: This route is used to get a token manager from the ledger
       responses:
         "200":
           description: "Token manager found successfully"
@@ -144,7 +144,7 @@ paths:
       tags:
         - token manager admin
       summary: Update a token manager
-      description: TBD
+      description: This route is used to update a token manager on the ledger
       requestBody:
         content:
           application/json:
@@ -164,126 +164,11 @@ paths:
       tags:
         - token manager admin
       summary: Delete a token manager
-      description: TBD
+      description: This route is used to delete a token manager from the ledger
       responses:
         "200":
           description: "Token manager deleted successfully"
-  /v1/token_managers/{token_manager_id}/supported_assets:
-    post:
-      parameters:
-        - name: token_manager_id
-          in: path
-          required: true
-          description: "The token manager id"
-          schema:
-            type: string
-      tags:
-        - token manager admin
-      summary: Create an asset type
-      description: TBD
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SupportedAsset"
-      responses:
-        "200":
-          description: "Asset type created successfully"
-    get:
-      parameters:
-        - name: token_manager_id
-          in: path
-          required: true
-          description: "The token manager id"
-          schema:
-            type: string
-      tags:
-        - token manager admin
-      summary: Get all asset types as a list
-      description: TBD
-      responses:
-        "200":
-          description: "Asset types found successfully"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/SupportedAsset"
-  /v1/token_managers/{token_manager_id}/supported_assets/{supported_asset_id}:
-    get:
-      parameters:
-        - name: token_manager_id
-          in: path
-          required: true
-          description: "The token manager id"
-          schema:
-            type: string
-        - name: supported_asset_id
-          in: path
-          required: true
-          description: "The supported asset id"
-          schema:
-            type: string
-      tags:
-        - token manager admin
-      summary: Get an asset type
-      description: TBD
-      responses:
-        "200":
-          description: "Asset type found successfully"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SupportedAsset"
-    put:
-      parameters:
-        - name: token_manager_id
-          in: path
-          required: true
-          description: "The token manager id"
-          schema:
-            type: string
-        - name: supported_asset_id
-          in: path
-          required: true
-          description: "The supported asset id"
-          schema:
-            type: string
-      tags:
-        - token manager admin
-      summary: Update an asset type
-      description: TBD
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SupportedAsset"
-      responses:
-        "200":
-          description: "Asset type updated successfully"
-    delete:
-      parameters:
-        - name: token_manager_id
-          in: path
-          required: true
-          description: "The token manager id"
-          schema:
-            type: string
-        - name: supported_asset_id
-          in: path
-          required: true
-          description: "The supported asset id"
-          schema:
-            type: string
-      tags:
-        - token manager admin
-      summary: Delete an asset type
-      description: TBD
-      responses:
-        "200":
-          description: "Asset type deleted successfully"
-  # ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
   # Asset Management
   /v1/users/{user_id}/assets:
     post:
@@ -303,7 +188,7 @@ paths:
       tags:
         - asset management
       summary: Create a asset
-      description: TBD
+      description: This route is used to tokenize an asset on the ledger
       requestBody:
         content:
           application/json:
@@ -336,7 +221,7 @@ paths:
       tags:
         - asset management
       summary: Get an asset
-      description: TBD
+      description: This route is used to get asset info from the ledger
       responses:
         "200":
           description: "Asset found successfully"
@@ -367,7 +252,7 @@ paths:
       tags:
         - asset management
       summary: Update an asset
-      description: TBD
+      description: This route is used to update asset info on the ledger
       requestBody:
         content:
           application/json:
@@ -399,7 +284,7 @@ paths:
       tags:
         - asset management
       summary: Delete an asset
-      description: TBD
+      description: This route is used to detokenize an asset from the ledger
       responses:
         "200":
           description: "Asset deleted successfully"
@@ -427,7 +312,7 @@ paths:
       tags:
         - asset management
       summary: transfer an asset
-      description: TBD
+      description: This route is used to transfer an asset from one user to another
       requestBody:
         content:
           application/json:
@@ -463,7 +348,7 @@ paths:
       tags:
         - asset management
       summary: nominate an asset
-      description: TBD
+      description: This route is used to nominate an asset to a user
       requestBody:
         content:
           application/json:
@@ -499,7 +384,7 @@ paths:
       tags:
         - asset management
       summary: lease an asset
-      description: TBD
+      description: This route is used to lease an asset to a user
       requestBody:
         content:
           application/json:
@@ -535,7 +420,7 @@ paths:
       tags:
         - asset management
       summary: pledge an asset
-      description: TBD
+      description: This route is used to pledge an asset to a user
       requestBody:
         content:
           application/json:
