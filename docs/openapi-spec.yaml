@@ -585,23 +585,41 @@ components:
     Asset:
       type: object
       properties:
-        id:
-          type: string
-          description: "A Unique Account Address to be assigned to the asset"
-        allowed_verbs:
-          type: string
-          description: "The allowed verbs for the asset"
-        issuer_id:
-          type: string
-          description: "The issuer of the asset"
+        chain_id:
+          type: "string"
+          format: "byte"
+        class_id:
+          type: "string"
+          format: "byte"
+        asset_instance_id:
+          type: "string"
+          format: "byte"
+        asset_state:
+          type: "string"
+          enum:
+            - locked
+            - unlocked
+        unit:
+          type: "integer"
+        token_manager:
+          type: "string"
+          format: "byte"
+        created_at:
+          type: "string"
+          format: "date-time"
+        modified_at:
+          type: "string"
+          format: "date-time"
+        holders:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
         asset_type:
-          $ref: "#/components/schemas/AssetType"
-        holder_id:
-          oneOf:
-            - type: string
-            - type: array
-              items:
-                type: string
+          type: "string"
+          enum:
+            - fungible
+            - non-fungible
     SupportedAsset:
       type: object
       properties:
@@ -613,4 +631,4 @@ components:
       type: string
       enum:
         - property
-        - currency
+        - money
