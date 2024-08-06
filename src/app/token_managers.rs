@@ -10,6 +10,11 @@ use crate::state::AppState;
 mod supported_assets;
 mod types;
 
+/// A router for the token managers API.
+///
+/// This router handles requests to the `/token_managers` endpoint.
+///
+///
 pub fn router() -> Result<axum::Router<AppState>, ConfigurationError> {
     let router = axum::Router::new()
         .route("/", post(create_token_manager).get(list_token_managers))
@@ -27,63 +32,38 @@ pub fn router() -> Result<axum::Router<AppState>, ConfigurationError> {
     Ok(router)
 }
 
-// async fn create_token_manager(State(app_state): State<AppState>, Json(req): Json<types::CreateTokenManagerRequest>) {}
-
+/// Create a new token manager.
+///
 async fn create_token_manager(
-    State(app_state): State<AppState>,
-    Json(req): Json<types::CreateTokenManagerRequest>,
+    State(_app_state): State<AppState>,
+    Json(_req): Json<types::CreateTokenManagerRequest>,
 ) -> Result<Json<types::CreateTokenManagerResponse>, ApiError> {
-    let token_manager_name = req.token_manager_name.clone();
-
-    let token_manager_id = app_state
-        .storage
-        .get_token_manager_interface()
-        .await
-        .change_context(ApiError::CreateTokenManagerError)
-        .map_err(log_convert)?
-        .create_token_manager(req.into())
-        .await
-        .change_context(ApiError::CreateTokenManagerError)
-        .map_err(log_convert)?;
-
-    Ok(Json(types::CreateTokenManagerResponse {
-        token_manager_id,
-        token_manager_name,
-    }))
+    Err(ApiError::NotImplemented)
 }
 
+/// List all token managers.
+///
 async fn list_token_managers(
     State(app_state): State<AppState>,
-) -> Result<impl IntoResponse, ApiError> {
-    let token_managers = app_state
-        .storage
-        .get_token_manager_interface()
-        .await
-        .change_context(ApiError::ListTokenManagersError)
-        .map_err(log_convert)?
-        .list_token_manager()
-        .await
-        .change_context(ApiError::ListTokenManagersError)
-        .map_err(log_convert)?;
-
-    Ok(Json(
-        token_managers
-            .into_iter()
-            .map(types::CreateTokenManagerResponse::from)
-            .collect::<Vec<_>>(),
-    )
-    .into_response())
+) -> Result<Json<Vec<types::CreateTokenManagerResponse>>, ApiError> {
+    Err(ApiError::NotImplemented)
 }
 
+/// Get a token manager by ID.
+///
 async fn get_token_manager(Path(_token_manager_id): Path<String>) -> impl IntoResponse {
     ApiError::NotImplemented
 }
 
+/// Update a token manager by ID.
+///
 async fn update_token_manager(Path(_token_manager_id): Path<String>) -> impl IntoResponse {
     // ...
     ApiError::NotImplemented
 }
 
+/// Delete a token manager by ID.
+///
 async fn delete_token_manager(Path(_token_manager_id): Path<String>) -> impl IntoResponse {
     // ...
     ApiError::NotImplemented

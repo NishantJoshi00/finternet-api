@@ -2,16 +2,18 @@ use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use axum::Json;
-use error_stack::ResultExt;
 
-use crate::error::{log_convert, ApiError, ConfigurationError};
+use crate::error::{ApiError, ConfigurationError};
 use crate::state::AppState;
 
-use crate::logging::prelude::*;
-
-mod accounts;
+mod assets;
 mod types;
 
+/// A router for the users API.
+///
+/// This router handles requests to the `/users` endpoint.
+///
+///
 pub fn router() -> Result<axum::Router<AppState>, ConfigurationError> {
     let router = axum::Router::new()
         .route("/", post(create_user))
@@ -19,59 +21,53 @@ pub fn router() -> Result<axum::Router<AppState>, ConfigurationError> {
             "/:user_id",
             get(get_user).put(update_user).delete(delete_user),
         )
-        .nest("/:user_id/accounts", accounts::router()?);
+        .nest("/:user_id/assets", assets::router()?);
 
     Ok(router)
 }
 
+/// Create a new user.
+///
+/// ## Arguments
+/// - `app_state`: The application state.
+/// - `user`: [`CreateUserRequest`] The request type for the API
+///
+/// ## Returns
+///
+/// The response type [`CreateUserResponse`] for the API.
 async fn create_user(
-    State(app_state): State<AppState>,
-    Json(user): Json<types::CreateUserRequest>,
+    State(_app_state): State<AppState>,
+    Json(_user): Json<types::CreateUserRequest>,
 ) -> Result<Json<types::CreateUserResponse>, ApiError> {
-    let ua_addr = user.ua_addr.clone();
-    let user_id = app_state
-        .storage
-        .get_user_interface()
-        .await
-        .change_context(ApiError::CreateUserError)
-        .map_err(log_convert)?
-        .create_user(user.clone().into())
-        .await
-        .change_context(ApiError::CreateUserError)
-        .map_err(log_convert)?;
-
-    let output = types::CreateUserResponse { user_id, ua_addr };
-
-    info!("Created user: {:?}", output);
-
-    Ok(Json(output))
+    Err(ApiError::NotImplemented)
 }
 
+/// Get a user by ID.
+///
+///
+/// ## Arguments
+/// - `app_state`: The application state.
+/// - `user_id`: The ID of the user to get.
+///
+/// ## Returns
+/// The response type [`GetUserResponse`] for the API.
+///
 async fn get_user(
-    State(app_state): State<AppState>,
-    Path(user_id): Path<String>,
-) -> Result<impl IntoResponse, ApiError> {
-    let user = app_state
-        .storage
-        .get_user_interface()
-        .await
-        .change_context(ApiError::GetUserError)
-        .map_err(log_convert)?
-        .get_user(&user_id)
-        .await
-        .change_context(ApiError::GetUserError)
-        .map_err(log_convert)?;
-
-    let output: types::GetUserResponse = user.into();
-
-    Ok(Json(output))
+    State(_app_state): State<AppState>,
+    Path(_user_id): Path<String>,
+) -> Result<Json<types::GetUserResponse>, ApiError> {
+    Err(ApiError::NotImplemented)
 }
 
+/// Update a user by ID.
+///
 async fn update_user(Path(_user_id): Path<String>) -> impl IntoResponse {
     // ...
     ApiError::NotImplemented
 }
 
+/// Delete a user by ID.
+///
 async fn delete_user(Path(_user_id): Path<String>) -> impl IntoResponse {
     // ...
     ApiError::NotImplemented
