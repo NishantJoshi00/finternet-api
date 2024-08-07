@@ -44,7 +44,7 @@ async fn create_token_manager(
 /// List all token managers.
 ///
 async fn list_token_managers(
-    State(app_state): State<AppState>,
+    State(_app_state): State<AppState>,
 ) -> Result<Json<Vec<types::CreateTokenManagerResponse>>, ApiError> {
     Err(ApiError::NotImplemented)
 }

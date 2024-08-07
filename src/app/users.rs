@@ -56,7 +56,19 @@ async fn get_user(
     State(_app_state): State<AppState>,
     Path(_user_id): Path<String>,
 ) -> Result<Json<types::GetUserResponse>, ApiError> {
-    Err(ApiError::NotImplemented)
+    // Err(ApiError::NotImplemented)
+
+    let output = types::GetUserResponse {
+        user: types::User {
+            ua_addr: "arnab.d@unifiedledger1".to_string(),
+            public_key: "7b3e7717a2a479e9c08372d7e20f6ae19cc071f2ad3b66f18d4c84243370153b"
+                .to_string(),
+            name: "Arnab".to_string(),
+            email: "alice@example.com".to_string(),
+        },
+    };
+
+    Ok(Json(output))
 }
 
 /// Update a user by ID.

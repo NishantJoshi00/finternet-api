@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub enum Verb {
     #[serde(rename = ":transfer")]
     Transfer,
@@ -56,7 +56,45 @@ pub struct TransferAssetRequest {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct MockTransferRequest {
+    pub sender: String,
+    pub recipient: String,
+    pub asset: MockAsset,
+    pub signature: String,
+}
+
+#[derive(Debug, Deserialize)]
 #[serde(untagged)]
 pub enum VerbRequest {
-    Transfer(TransferAssetRequest),
+    Transfer(MockTransferRequest),
+}
+
+#[derive(Debug, Serialize)]
+pub struct AssetListing {
+    pub token_manager: String,
+    pub default: bool,
+    pub account: String,
+    pub balance: u64,
+    pub currency: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct MockAsset {
+    pub currency: String,
+    pub unit: u64,
+    pub token_manager: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct HistoryElement {
+    pub verb: Verb,
+    pub asset: MockAsset,
+    pub recipient: String,
+    pub sender: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct TransferResponse {
+    pub transaction_id: String,
+    pub status: String,
 }

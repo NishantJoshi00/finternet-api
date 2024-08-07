@@ -28,3 +28,4 @@ async fn main() -> SResult<(), ConfigurationError> {
 
     Ok(())
 }
+

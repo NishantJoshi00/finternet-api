@@ -29,6 +29,8 @@ dyn-clone = "1.0.17"
 nanoid = "0.4.0"
 time = { version = "0.3.36", features = ["serde"] }
 
+shuttle-runtime = "0.47.0"
+shuttle-axum = "0.47.0"
 
 [build-dependencies]
 cargo_metadata = "0.18.1"
