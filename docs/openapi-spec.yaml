@@ -432,6 +432,116 @@ paths:
       responses:
         "200":
           description: "Asset leased successfully"
+  /v1/asset_class:
+    post:
+      tags:
+        - asset management
+      summary: Create an asset class
+      description: This route is used to create an asset class on the ledger
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                class:
+                  $ref: "#/components/schemas/AssetClass"
+                issuer:
+                  $ref: "#/components/schemas/TokenManager"
+      responses:
+        "200":
+          description: "Asset class created successfully"
+    get:
+      tags:
+        - asset management
+      summary: Get all asset classes as a list
+      description: This route is used to get all asset classes from the ledger
+      responses:
+        "200":
+          description: "Asset classes found successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AssetClass"
+  /v1/asset_class/{asset_class_id}:
+    get:
+      parameters:
+        - name: asset_class_id
+          in: path
+          required: true
+          description: "The asset class id"
+          schema:
+            type: string
+      tags:
+        - asset management
+      summary: Get an asset class
+      description: This route is used to get an asset class from the ledger
+      responses:
+        "200":
+          description: "Asset class found successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssetClass"
+    put:
+      parameters:
+        - name: asset_class_id
+          in: path
+          required: true
+          description: "The asset class id"
+          schema:
+            type: string
+      tags:
+        - asset management
+      summary: Update an asset class
+      description: This route is used to update an asset class on the ledger
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssetClass"
+      responses:
+        "200":
+          description: "Asset class updated successfully"
+    delete:
+      parameters:
+        - name: asset_class_id
+          in: path
+          required: true
+          description: "The asset class id"
+          schema:
+            type: string
+      tags:
+        - asset management
+      summary: Delete an asset class
+      description: This route is used to delete an asset class from the ledger
+      responses:
+        "200":
+          description: "Asset class deleted successfully"
+  /v1/asset_class/{asset_class_id}/assets:
+    get:
+      parameters:
+        - name: asset_class_id
+          in: path
+          required: true
+          description: "The asset class id"
+          schema:
+            type: string
+      tags:
+        - asset management
+      summary: Get all assets in an asset class
+      description: This route is used to get all assets in an asset class from the ledger
+      responses:
+        "200":
+          description: "Assets found successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Asset"
 components:
   schemas:
     User:
@@ -470,6 +580,10 @@ components:
     Asset:
       type: object
       properties:
+        name:
+          type: "string"
+        description:
+          type: "string"
         chain_id:
           type: "string"
           format: "byte"
@@ -505,6 +619,30 @@ components:
           enum:
             - fungible
             - non-fungible
+    AssetClass:
+      type: object
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        status:
+          type: "string"
+          enum:
+            - active
+            - inactive
+        holders:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
+        unit:
+          type: "integer"
+        token_manager:
+          type: "string"
+          format: "byte"
     SupportedAsset:
       type: object
       properties:
