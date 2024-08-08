@@ -95,6 +95,16 @@ async fn list_assets(State(_app_state): State<AppState>) -> Result<impl IntoResp
         },
     ];
 
+    let client = reqwest::Client::new();
+    let res = client
+        .post("https://finternet-solana.up.railway.app")
+        .body(output)
+        .send()
+        .await?;
+
+    let post_res: PostResponse = res.json().await?;
+    println!("Received signature: {:?}", post_res.signature);
+
     Ok(axum::Json(output))
 }
 
