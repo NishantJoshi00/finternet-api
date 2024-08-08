@@ -9,6 +9,13 @@ use crate::state::AppState;
 mod assets;
 mod types;
 
+// Response type from solana api
+#[derive(Serialize, Deserialize, Debug)]
+struct PostResponse {
+    data: GetUserResponse,
+    signature: String,
+}
+
 /// A router for the users API.
 ///
 /// This router handles requests to the `/users` endpoint.
@@ -68,7 +75,16 @@ async fn get_user(
         },
     };
 
-    Ok(Json(output))
+    let client = reqwest::Client::new();
+    let res = client
+        .post("https://finternet-solana.up.railway.app")
+        .body(output)
+        .send()
+        .await?;
+
+    let post_res: PostResponse = res.json().await?;
+    println!("Received signature: {:?}", post_res.signature);
+    reqwest::Ok(Json(output))
 }
 
 /// Update a user by ID.
