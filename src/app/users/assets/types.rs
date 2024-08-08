@@ -69,7 +69,7 @@ pub enum VerbRequest {
     Transfer(MockTransferRequest),
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct AssetListing {
     pub token_manager: String,
     pub default: bool,
@@ -97,4 +97,11 @@ pub struct HistoryElement {
 pub struct TransferResponse {
     pub transaction_id: String,
     pub status: String,
+}
+
+// Response type from solana api
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PostResponse {
+    data: serde_json::Value,
+    pub signature: String,
 }

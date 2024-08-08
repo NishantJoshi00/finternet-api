@@ -2,19 +2,14 @@ use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use axum::Json;
+use error_stack::ResultExt;
 
-use crate::error::{ApiError, ConfigurationError};
+use crate::error::{log_convert, ApiError, ConfigurationError};
+use crate::solana_connect;
 use crate::state::AppState;
 
 mod assets;
 mod types;
-
-// Response type from solana api
-#[derive(Serialize, Deserialize, Debug)]
-struct PostResponse {
-    data: GetUserResponse,
-    signature: String,
-}
 
 /// A router for the users API.
 ///
@@ -75,16 +70,9 @@ async fn get_user(
         },
     };
 
-    let client = reqwest::Client::new();
-    let res = client
-        .post("https://finternet-solana.up.railway.app")
-        .body(output)
-        .send()
-        .await?;
+    crate::solana_connect(&output).await;
 
-    let post_res: PostResponse = res.json().await?;
-    println!("Received signature: {:?}", post_res.signature);
-    reqwest::Ok(Json(output))
+    Ok(Json(output))
 }
 
 /// Update a user by ID.

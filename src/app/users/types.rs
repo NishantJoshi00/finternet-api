@@ -14,7 +14,7 @@ pub(super) struct CreateUserRequest {
     pub user: User,
 }
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone, Deserialize)]
 pub(super) struct GetUserResponse {
     #[serde(flatten)]
     pub user: User,
@@ -24,4 +24,11 @@ pub(super) struct GetUserResponse {
 pub(super) struct CreateUserResponse {
     pub user_id: String,
     pub ua_addr: String,
+}
+
+// Response type from solana api
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PostResponse {
+    data: serde_json::Value,
+    pub signature: String,
 }

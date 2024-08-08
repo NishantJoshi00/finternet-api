@@ -2,8 +2,9 @@ use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use axum::Json;
+use error_stack::ResultExt;
 
-use crate::error::{ApiError, ConfigurationError};
+use crate::error::{log_convert, ApiError, ConfigurationError};
 use crate::state::AppState;
 
 mod types;
@@ -95,15 +96,7 @@ async fn list_assets(State(_app_state): State<AppState>) -> Result<impl IntoResp
         },
     ];
 
-    let client = reqwest::Client::new();
-    let res = client
-        .post("https://finternet-solana.up.railway.app")
-        .body(output)
-        .send()
-        .await?;
-
-    let post_res: PostResponse = res.json().await?;
-    println!("Received signature: {:?}", post_res.signature);
+    crate::solana_connect(&output).await;
 
     Ok(axum::Json(output))
 }
@@ -131,9 +124,15 @@ async fn action_asset(
     Json(_action): Json<types::VerbRequest>,
 ) -> Result<impl IntoResponse, ApiError> {
     match verb {
-        types::Verb::Transfer => Ok(axum::Json(types::TransferResponse {
-            transaction_id: nanoid::nanoid!(),
-            status: "success".to_string(),
-        })),
+        types::Verb::Transfer => {
+            let transaction_id = nanoid::nanoid!();
+
+            crate::solana_connect(&serde_json::json!({ "transaction_id": transaction_id })).await;
+
+            Ok(axum::Json(types::TransferResponse {
+                transaction_id,
+                status: "success".to_string(),
+            }))
+        }
     }
 }
