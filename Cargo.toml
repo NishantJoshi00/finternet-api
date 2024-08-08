@@ -6,7 +6,8 @@ edition = "2021"
 [dependencies]
 tokio = { version = "1.38.0", features = ["rt-multi-thread", "macros"] }
 tower = "0.4.13"
-axum = "0.7.5"
+axum = { version = "0.7.5" }
+tower-http = { version = "0.5.2", features = ["cors"] }
 thiserror = "1.0.61"
 error-stack = "0.4.1"
 

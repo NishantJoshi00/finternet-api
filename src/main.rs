@@ -28,7 +28,11 @@ async fn main() -> shuttle_axum::ShuttleAxum {
     info!("Config: {:#?}", config);
 
     let router = finternet_app_api::app::router().unwrap();
+
     let router = router.with_state(AppState::imc_backed(config.clone()));
+
+    let router =
+        router.layer(tower_http::cors::CorsLayer::new().allow_origin(tower_http::cors::any()));
 
     Ok(router.into())
 }
