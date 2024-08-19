@@ -11,6 +11,7 @@ pub async fn solana_connect(
     route: &str,
 ) -> Result<Option<String>, reqwest::Error> {
     let client = reqwest::Client::new();
+
     let url = format!("https://finternet-solana-apis-production.up.railway.app{}", route);
     let res = client.post(&url).json(&data).send().await;
 
@@ -37,6 +38,6 @@ pub async fn solana_connect(
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct PostResponse {
-    data: serde_json::Value,
+    // data: serde_json::Value,
     pub signature: String,
 }
