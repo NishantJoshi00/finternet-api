@@ -12,7 +12,10 @@ pub async fn solana_connect(
 ) -> Result<Option<String>, reqwest::Error> {
     let client = reqwest::Client::new();
 
-    let url = format!("https://finternet-solana-apis-production.up.railway.app{}", route);
+    let url = format!(
+        "https://finternet-solana-apis-production.up.railway.app{}",
+        route
+    );
     let res = client.post(&url).json(&data).send().await;
 
     match res {
