@@ -6,23 +6,33 @@ pub mod logging;
 pub mod state;
 pub mod storage;
 
-pub async fn solana_connect(data: &impl serde::Serialize) {
+pub async fn solana_connect(
+    data: &impl serde::Serialize,
+    route: &str,
+) -> Result<Option<String>, reqwest::Error> {
     let client = reqwest::Client::new();
-    let res = client
-        .post("https://finternet-solana.up.railway.app")
-        .json(&data)
-        .send()
-        .await;
+    let url = format!("https://finternet-solana.up.railway.app{}", route);
+
+    let res = client.post(&url).json(&data).send().await;
 
     match res {
         Ok(ires) => {
             let post_res = ires.json::<PostResponse>().await;
             match post_res {
-                Ok(ires) => println!("Received signature: {:?}", ires.signature),
-                Err(e) => println!("Failed to parse response: {:?}", e),
+                Ok(ires) => {
+                    println!("Signature from response: {:?}", ires.signature);
+                    Ok(Some(ires.signature))
+                }
+                Err(e) => {
+                    println!("Failed to parse response: {:?}", e);
+                    Ok(None)
+                }
             }
         }
-        Err(e) => println!("Failed to connect to Solana: {:?}", e),
+        Err(e) => {
+            println!("Failed to connect to Solana: {:?}", e);
+            Err(e)
+        }
     }
 }
 
