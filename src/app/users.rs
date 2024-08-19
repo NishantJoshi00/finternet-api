@@ -41,7 +41,32 @@ async fn create_user(
     State(_app_state): State<AppState>,
     Json(_user): Json<types::CreateUserRequest>,
 ) -> Result<Json<types::CreateUserResponse>, ApiError> {
-    Err(ApiError::NotImplemented)
+    // Err(ApiError::NotImplemented)
+    let mock_user = types::GetUserResponse {
+        user: types::User {
+            ua_addr: "arnab.d@unifiedledger1".to_string(),
+            public_key: "7b3e7717a2a479e9c08372d7e20f6ae19cc071f2ad3b66f18d4c84243370153b"
+                .to_string(),
+            name: "Arnab".to_string(),
+            email: "alice@example.com".to_string(),
+        },
+    };
+    match crate::solana_connect(&mock_user, "/user/create").await {
+        Ok(Some(signature)) => {
+            // Use the signature as the user_id
+            let output = types::CreateUserResponse {
+                user_id: mock_user.user.ua_addr.clone(),
+                ua_addr: mock_user.user.ua_addr.clone(),
+                signature,
+            };
+            Ok(Json(output))
+        }
+        Ok(None) => {
+            // Handle case where signature parsing failed
+            Err(ApiError::SolanaProviderError)
+        }
+        Err(e) => Err(ApiError::CreateUserError),
+    }
 }
 
 /// Get a user by ID.
@@ -69,8 +94,6 @@ async fn get_user(
             email: "alice@example.com".to_string(),
         },
     };
-
-    crate::solana_connect(&output).await;
 
     Ok(Json(output))
 }

@@ -85,6 +85,11 @@ pub enum ApiError {
 
     #[error("Asset type not supported by the token manager")]
     AssetTypeNotSupportedError,
+
+    #[error("Solana Provider Error")]
+    SolanaProviderError,
+    #[error("Transfer Error ")]
+    TransferError,
 }
 
 impl IntoResponse for ApiError {
@@ -120,10 +125,14 @@ impl IntoResponse for ApiError {
             }
             ApiError::CreateSupportedAssetError => {
                 axum::response::Json("Failed while creating supported asset").into_response()
-            },
+            }
             ApiError::FetchAccountError => {
                 axum::response::Json("Failed while fetching the account").into_response()
             }
+            ApiError::SolanaProviderError => {
+                axum::response::Json("Solana Provider failed").into_response()
+            }
+            ApiError::TransferError => axum::response::Json("Failed to transfer").into_response(),
         }
     }
 }

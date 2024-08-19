@@ -24,6 +24,7 @@ pub(super) struct GetUserResponse {
 pub(super) struct CreateUserResponse {
     pub user_id: String,
     pub ua_addr: String,
+    pub signature: String,
 }
 
 // Response type from solana api

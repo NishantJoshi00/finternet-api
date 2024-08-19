@@ -96,8 +96,6 @@ async fn list_assets(State(_app_state): State<AppState>) -> Result<impl IntoResp
         },
     ];
 
-    crate::solana_connect(&output).await;
-
     Ok(axum::Json(output))
 }
 
@@ -127,12 +125,19 @@ async fn action_asset(
         types::Verb::Transfer => {
             let transaction_id = nanoid::nanoid!();
 
-            crate::solana_connect(&serde_json::json!({ "transaction_id": transaction_id })).await;
-
-            Ok(axum::Json(types::TransferResponse {
-                transaction_id,
-                status: "success".to_string(),
-            }))
+            match crate::solana_connect(
+                &serde_json::json!({ "transaction_id": transaction_id }),
+                "/user/transfer",
+            )
+            .await
+            {
+                Ok(Some(signature)) => Ok(axum::Json(types::TransferResponse {
+                    transaction_id: signature,
+                    status: "success".to_string(),
+                })),
+                Ok(None) => Err(ApiError::SolanaProviderError),
+                Err(e) => Err(ApiError::TransferError),
+            }
         }
     }
 }
