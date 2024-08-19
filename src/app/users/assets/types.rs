@@ -102,6 +102,6 @@ pub struct TransferResponse {
 // Response type from solana api
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PostResponse {
-    data: serde_json::Value,
+    // data: serde_json::Value,
     pub signature: String,
 }

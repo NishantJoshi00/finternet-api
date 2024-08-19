@@ -127,7 +127,7 @@ async fn action_asset(
 
             match crate::solana_connect(
                 &serde_json::json!({ "transaction_id": transaction_id }),
-                "/user/transfer",
+                "/token/transfer",
             )
             .await
             {
