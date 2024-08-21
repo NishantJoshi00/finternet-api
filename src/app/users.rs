@@ -44,11 +44,11 @@ async fn create_user(
     // Err(ApiError::NotImplemented)
     let mock_user = types::GetUserResponse {
         user: types::User {
-            ua_addr: "arnab.d@unifiedledger1".to_string(),
+            ua_addr: "nandan@finternet".to_string(),
             public_key: "7b3e7717a2a479e9c08372d7e20f6ae19cc071f2ad3b66f18d4c84243370153b"
                 .to_string(),
-            name: "Arnab".to_string(),
-            email: "alice@example.com".to_string(),
+            name: "Nandan".to_string(),
+            email: "nandan@finternet.io".to_string(),
         },
     };
     match crate::solana_connect(&mock_user, "/user/create").await {
@@ -87,11 +87,11 @@ async fn get_user(
 
     let output = types::GetUserResponse {
         user: types::User {
-            ua_addr: "arnab.d@unifiedledger1".to_string(),
+            ua_addr: "nandan@finternet".to_string(),
             public_key: "7b3e7717a2a479e9c08372d7e20f6ae19cc071f2ad3b66f18d4c84243370153b"
                 .to_string(),
-            name: "Arnab".to_string(),
-            email: "alice@example.com".to_string(),
+            name: "Nandan".to_string(),
+            email: "nandan@finternet.io".to_string(),
         },
     };
 
