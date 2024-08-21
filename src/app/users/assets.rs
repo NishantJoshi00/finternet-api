@@ -39,9 +39,9 @@ async fn get_history(
         types::HistoryElement {
             verb: types::Verb::Transfer,
             asset: types::MockAsset {
-                currency: "USD".to_string(),
-                unit: 100,
-                token_manager: "Bank of America".to_string(),
+                currency: "INR".to_string(),
+                unit: 10000,
+                token_manager: "ABC Bank".to_string(),
             },
             recipient: "alex.t@unifiedledger1".to_string(),
             sender: user_id.clone(),
@@ -49,21 +49,21 @@ async fn get_history(
         types::HistoryElement {
             verb: types::Verb::Transfer,
             asset: types::MockAsset {
-                currency: "USD".to_string(),
-                unit: 200,
-                token_manager: "Bank of America".to_string(),
+                currency: "INR".to_string(),
+                unit: 200000,
+                token_manager: "Awesome Bank".to_string(),
             },
-            sender: "Christina.t@unifiedledger6".to_string(),
+            sender: "christina.t@unifiedledger6".to_string(),
             recipient: user_id.clone(),
         },
         types::HistoryElement {
             verb: types::Verb::Transfer,
             asset: types::MockAsset {
-                currency: "USD".to_string(),
-                unit: 200,
-                token_manager: "Bank of America".to_string(),
+                currency: "INR".to_string(),
+                unit: 200000,
+                token_manager: "People's Bank".to_string(),
             },
-            sender: "Nicki.t@unifiedledger6".to_string(),
+            sender: "nicki.t@unifiedledger6".to_string(),
             recipient: user_id,
         },
     ];
@@ -74,25 +74,25 @@ async fn get_history(
 async fn list_assets(State(_app_state): State<AppState>) -> Result<impl IntoResponse, ApiError> {
     let output = vec![
         types::AssetListing {
-            token_manager: "Bank of America".to_string(),
+            token_manager: "ABC Bank".to_string(),
             default: true,
             account: "1234".to_string(),
             balance: 5000,
-            currency: "USD".to_string(),
+            currency: "INR".to_string(),
         },
         types::AssetListing {
-            token_manager: "JPMorgan Chase & Co.".to_string(),
+            token_manager: "Awesome Bank".to_string(),
             default: false,
             account: "1217".to_string(),
             balance: 1000,
-            currency: "USD".to_string(),
+            currency: "INR".to_string(),
         },
         types::AssetListing {
-            token_manager: "Citi Bank".to_string(),
+            token_manager: "People's Bank".to_string(),
             default: false,
             account: "1174".to_string(),
             balance: 2000,
-            currency: "USD".to_string(),
+            currency: "INR".to_string(),
         },
     ];
 
