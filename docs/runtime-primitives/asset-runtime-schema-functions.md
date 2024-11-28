@@ -266,8 +266,8 @@ Key differences from traditional inode:
 - Explicit support for fractional ownership
 - Compliance and regulatory metadata
 
-The accompanying `asset_registry` structure provides a way to manage these asset records, similar to how a filesystem superblock manages inodes.
-
+The accompanying `asset_registry` structure provides a way to manage these asset
+records, similar to how a filesystem superblock manages inodes.
 
 ```c
 // Asset representation structure inspired by inode and asset schema management concepts
@@ -479,6 +479,17 @@ sequenceDiagram
     Note over User Process: File descriptor can now<br/>be used with read(),<br/>write(), etc.
 ```
 
+
+
+
+
+
+
+
+
+
+
+
 ### Open Life Cycle (Remote Resources)
 ```mermaid
 
@@ -541,6 +552,18 @@ sequenceDiagram
 
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
 ### Read Life Cycle
 ```mermaid
 sequenceDiagram
@@ -574,6 +597,16 @@ sequenceDiagram
     VFS->>System Call Interface: Copy to user space
     System Call Interface->>User Process: Return bytes read
 ```
+
+
+
+
+
+
+
+
+
+
 
 ---
 ### Knowledge
@@ -614,6 +647,17 @@ sequenceDiagram
 ```
 
 
+
+
+
+
+
+
+
+
+
+
+
 ```mermaid
 stateDiagram-v2
     [*] --> Inode
@@ -642,6 +686,16 @@ stateDiagram-v2
     FSB --> PB
 ```
 
+
+
+
+
+
+
+
+
+
+
 ### Locking (WIP)
 
 - In the case of files, the kernel doesn't enforce locking, it's something that is done by the applications explicitly.  In the case of assets the locking will have to be implicit in the UL system (typically implemented in the asset driver modules).
@@ -665,6 +719,13 @@ graph TD
 	VFS --> DD
 	DD --> D
 ```
+
+
+
+
+
+
+
 
 ## Low Level Interfaces
 In a Linux operating system, when working with files following are the key components that take part in the process:
