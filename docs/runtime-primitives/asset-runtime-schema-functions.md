@@ -561,9 +561,6 @@ sequenceDiagram
 
 
 
-
-
-
 ### Read Life Cycle
 ```mermaid
 sequenceDiagram
@@ -726,7 +723,6 @@ graph TD
 
 
 
-
 ## Low Level Interfaces
 In a Linux operating system, when working with files following are the key components that take part in the process:
 
@@ -774,6 +770,16 @@ If we are saying that an asset is similar to a file, then what are the component
 - Process is any operation that the user wants to perform.
   it could either be a direct request from the user, a cron that is scheduled to run or a event hook
 - File Descriptor is the instance of the asset that the process holds from processing. This is an active reference in response to a `open` syscall. Which in our case would be an intent to perform an action. A file descriptor in our case would look more like a purpose bound reference to the asset.
+
+|  Operating System           | Unified Ledger          |
+| --------------------------- | ----------------------- |
+| System Daemon               | API                     |
+| Kernel                      | Core UL                 |
+| VFS                         | Virtual Asset Layer     |
+| Device Driver / File System | Asset Drivers           |
+| Hard Disk                   | Ledger / Database       |
+| Process                     | User operation          |
+| File Descriptor             | Intent                  |
 
 Actions (Syscalls)
 
