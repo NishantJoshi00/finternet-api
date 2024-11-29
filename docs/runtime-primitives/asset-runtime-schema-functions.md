@@ -761,6 +761,8 @@ Now we are designing a new system, which is quite similar to the linux operating
 
 If we are saying that an asset is similar to a file, then what are the components that we need to design in our system?
 
+<details>
+<summary>mapping info</summary>
 - system daemon is like the interface via which the user will interact with this system.
   in our case, it's the API.
 - kernel the core of the system, which overlooks the operations and manages the resources.
@@ -774,6 +776,7 @@ If we are saying that an asset is similar to a file, then what are the component
 - Process is any operation that the user wants to perform.
   it could either be a direct request from the user, a cron that is scheduled to run or a event hook
 - File Descriptor is the instance of the asset that the process holds from processing. This is an active reference in response to a `open` syscall. Which in our case would be an intent to perform an action. A file descriptor in our case would look more like a purpose bound reference to the asset.
+</details>
 
 |  Operating System           | Unified Ledger          |
 | --------------------------- | ----------------------- |
@@ -840,6 +843,7 @@ This can be associated with adding support for a new asset on the system (or onb
     TBD
   ```
 
+### debit / credit
 We are unsure at this moment if the underlying debit/credit operations should be exposed to
 programs at all.
 
@@ -865,7 +869,6 @@ programs at all.
 - `usermod` Modify an existing user
 - `userdel` Delete a user from the system
 - `chmod` Change the permissions of an asset
-- ``
 
 ## Example Workflows
 
