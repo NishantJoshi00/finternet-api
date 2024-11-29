@@ -12,6 +12,9 @@ similar parallels.
 ## Inode Struct
 Following is the C struct declaration of the inode data structure with
 associated comments.
+<details>
+<summary>Linux Kernel Inode Struct Declaration</summary>
+
 ```c
 struct inode {
     unsigned long i_ino;                            // Inode number
@@ -233,6 +236,7 @@ enum fs_flags {
     FS_ALLOW_IDMAP          = 0x0020,               // Filesystem supports ID mapping
 };
 ```
+</details>
 
 Based on the above, we have come up with a potential struct for the
 asset_record.  Following is the summary of what is captured in the asset_record
