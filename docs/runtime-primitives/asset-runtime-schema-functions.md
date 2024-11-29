@@ -610,9 +610,13 @@ sequenceDiagram
 
 
 ---
-### Knowledge
+### Locking semantics in file system
 
-How multiple file descriptors can exist at the same time?
+How multiple file descriptors can exist at the same time? In the case of files,
+the kernel doesn't enforce locking, it's something that is done by the
+applications explicitly.  In the case of assets the locking will have to be
+implicit in the UL system (typically implemented in the asset driver modules).
+
 ```mermaid
 sequenceDiagram
     participant Process A
@@ -689,18 +693,17 @@ stateDiagram-v2
 
 
 
+## Low Level Interfaces
+In a Linux operating system, when working with files following are the key components that take part in the process:
 
-
-
-
-
-
-
-
-### Locking (WIP)
-
-- In the case of files, the kernel doesn't enforce locking, it's something that is done by the applications explicitly.  In the case of assets the locking will have to be implicit in the UL system (typically implemented in the asset driver modules).
-
+1. Linux Kernel (kernel)
+2. System Daemon (systemd)
+3. Virtual File System (VFS)
+4. Device Drivers (DD)
+5. Hardware (Disk)
+6. Process (P)
+7. File Descriptor (FD)
+8. FUSE Daemon (FUSE)
 
 ```mermaid
 graph TD
@@ -721,23 +724,6 @@ graph TD
 	DD --> D
 ```
 
-
-
-
-
-
-
-## Low Level Interfaces
-In a Linux operating system, when working with files following are the key components that take part in the process:
-
-1. Linux Kernel (kernel)
-2. System Daemon (systemd)
-3. Virtual File System (VFS)
-4. Device Drivers (DD)
-5. Hardware (Disk)
-6. Process (P)
-7. File Descriptor (FD)
-8. FUSE Daemon (FUSE)
 
 How does the interaction looks like?
 
