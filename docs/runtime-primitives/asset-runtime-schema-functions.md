@@ -705,25 +705,6 @@ In a Linux operating system, when working with files following are the key compo
 7. File Descriptor (FD)
 8. FUSE Daemon (FUSE)
 
-```mermaid
-graph TD
-	K[Kernel]
-	SD[SystemD]
-	VFS
-	DD[Device Driver]
-	D[Disk]
-	subgraph Process
-		FD[File Descriptor]
-	end
-
-	Process -->|syscalls| K
-	SD --> Process
-	K --> SD
-	K --> VFS
-	VFS --> DD
-	DD --> D
-```
-
 How does the interaction looks like?
 
 - The user creates a new process by requesting system daemon. SystemD asks kernel to spawn a new process.
@@ -747,7 +728,8 @@ Now we are designing a new system, which is quite similar to the linux operating
 If we are saying that an asset is similar to a file, then what are the components that we need to design in our system?
 
 <details>
-<summary>mapping info</summary>
+<summary>correlating with linux</summary>
+	
 - system daemon is like the interface via which the user will interact with this system.
   in our case, it's the API.
 - kernel the core of the system, which overlooks the operations and manages the resources.
@@ -761,6 +743,7 @@ If we are saying that an asset is similar to a file, then what are the component
 - Process is any operation that the user wants to perform.
   it could either be a direct request from the user, a cron that is scheduled to run or a event hook
 - File Descriptor is the instance of the asset that the process holds from processing. This is an active reference in response to a `open` syscall. Which in our case would be an intent to perform an action. A file descriptor in our case would look more like a purpose bound reference to the asset.
+
 </details>
 
 |  Operating System           | Unified Ledger          |
