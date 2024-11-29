@@ -785,7 +785,9 @@ If we are saying that an asset is similar to a file, then what are the component
 | Process                     | User operation          |
 | File Descriptor             | Intent                  |
 
-Actions (Syscalls)
+## Functional primitives (aka Syscalls)
+The following section describes potential functional primitives that we will
+need to perform operations on the above `asset_record` structure.
 
 ```c
 
@@ -799,14 +801,47 @@ enum IntentPurpose {
 
 ```
 
-- `intend`
+### intend
+This is analogous to the open system call indicating the user's intent to perform an operation.
   ```c
   intent_d intend(void* asset_id, uint32_t intent); // intent is a bitmask of the operations that the user wants to perform
   ```
-- `done` this is similar to the `close` syscall in linux
-  `c
-    int* done(intent_d intent); // it can error out
+
+### `done`
+This is similar to the `close` syscall in linux
+  ```c
+  int* done(intent_d intent); // it can error out
     `
+  ```
+
+### transfer
+This is the functional primitive to perform transfers between a debit and a credit intent.
+  ```c
+  int* transfer(intent_d from, intent_d to, uint32_t units); // it can error out
+  ```
+
+### view
+This is a functional primitive that can be used to retrieve balance for that
+particular asset.
+  ```c
+  int* view(intent_d intent); // it can error out
+  ```
+
+### execute
+TBD
+  ```c
+  int* execute();
+  ```
+
+
+### load_module
+This can be associated with adding support for a new asset on the system (or onboarding a remote asset)
+  ```c
+    TBD
+  ```
+
+We are unsure at this moment if the underlying debit/credit operations should be exposed to
+programs at all.
 
   > `debit`
   >
@@ -820,23 +855,7 @@ enum IntentPurpose {
   > int* credit(intent_d intent, uint32_t units); // it can error out
   > ```
 
-- `transfer`
-  ```c
-  int* transfer(intent_d from, intent_d to, uint32_t units); // it can error out
-  ```
-- `view`
-  ```c
-  int* view(intent_d intent); // it can error out
-  ```
-- `execute`
-  ```c
-  int* execute();
-  ```
-- `load_module` this can be associated with adding support for a new asset on the system (or onboarding a remote asset)
-
-  ```c
-
-  ```
+### Other syscall equivalents
 
 - `unload_module` this can be associated with deleting an asset from the system (or offboarding a remote asset)
 - `mod_resolv` Resolve the module to be used for performing fundamental operations on a specific asset.
@@ -850,9 +869,13 @@ enum IntentPurpose {
 
 ## Example Workflows
 
+The following section covers an imagination of a new asset/token manager module
+(for a couple of use-cases) is added to the system and how the underlying
+primitive calls can be invoked to compose a transaction.
+
 ### Money
 
-Boot Steps
+### Boot Steps
 
 ```c
 
@@ -862,7 +885,7 @@ load_module("upi.rtp.mod");
 mount("india.upi.rtp", "/udam/upi");
 ```
 
-My Program
+### Transaction program
 
 ```c
 
@@ -887,7 +910,7 @@ void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount)
 
 ## Securities
 
-Boot Steps
+### Boot Steps
 
 ```c
 
@@ -902,6 +925,8 @@ wget https://npci.org.in/upi/rtp/mod -o upi.rtp.mod
 load_module("upi.rtp.mod");
 mount("india.upi.rtp", "/udam/upi");
 ```
+
+### Transaction program
 
 ```c
 void sell_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) {
