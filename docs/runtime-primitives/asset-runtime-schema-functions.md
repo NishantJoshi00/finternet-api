@@ -693,7 +693,7 @@ stateDiagram-v2
 
 
 
-## Low Level Interfaces
+## Systems involved in reading a file
 In a Linux operating system, when working with files following are the key components that take part in the process:
 
 1. Linux Kernel (kernel)
@@ -723,7 +723,6 @@ graph TD
 	VFS --> DD
 	DD --> D
 ```
-
 
 How does the interaction looks like?
 
