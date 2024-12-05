@@ -973,8 +973,7 @@ void make_fractions(char* land_id) {
     intent_id intent_to_1 = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 1), O_CREATE);
     intent_id intent_to_2 = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 2), O_CREATE);
 
-
-
+    // TBD - this flow is incomplete
 }
 
 ```
