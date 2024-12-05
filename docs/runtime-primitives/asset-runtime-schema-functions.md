@@ -986,5 +986,5 @@ can move all upi accounts into one directory.
 
 ```c
 mkdir("/ul-provider-1/users/natarajan/upi-accounts/");
-rename("/ul-provider-1/users/natarajan/dp-id-1", "/ul-provider-1/users/natarajan/upi-accounts/")
+rename("/ul-provider-1/users/natarajan/upi-1", "/ul-provider-1/users/natarajan/upi-accounts/")
 ```
