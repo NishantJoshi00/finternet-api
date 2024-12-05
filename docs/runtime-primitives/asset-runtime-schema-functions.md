@@ -844,26 +844,49 @@ The following section covers an imagination of a new asset/token manager module
 (for a couple of use-cases) is added to the system and how the underlying
 primitive calls can be invoked to compose a transaction.
 
+### User Onboarding
+
+When a user (user1) signs up with a particular UL provider (say
+`ul-provider-1`), the equivalent of the `useradd` in a Linux system happens.
+
+```sh
+useradd user1
+```
+
+This will result in the `/ul-provider-1/users/{user1}/` namespace/directory created.
+
+
 ### Money
 
-### Boot Steps
+#### Boot Steps
 
 ```c
 
 wget https://npci.org.in/upi/rtp/mod -o upi.rtp.mod
 
 load_module("upi.rtp.mod");
-mount("india.upi.rtp", "/udam/upi");
+mount("india.upi.rtp", "/ul-provider-1/asset-managers/upi");
 ```
 
-### Transaction program
+#### User account linking
+User links their UPI account into this UL provider.
+
+```c
+symlink("/ul-provider-1/upi/natarajan@okicici", "/ul-provider-1/users/natarajan/upi-1");
+
+```
+
+#### Transaction program
 
 ```c
 
 
 void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount) {
-    intent_id intent_from = intend(sprintf("/udam/upi/%s", from), O_DEBIT);
-    intent_id intent_to = intend(sprintf("/udam/upi/%s", to), O_CREDIT);
+    intent_id intent_from = intend(sprintf("/ul-provider-1/users/natarajan/vpa-1", from), O_DEBIT);
+
+    // other possible variant
+    // intent_id intent_from = intend(sprintf("/ul-provider-1/upi/natarajan@okicici", from), O_DEBIT);
+    intent_id intent_to = intend(sprintf("/ul-provider-1/asset-managers/upi/%s", to), O_CREDIT);
 
     int exit_code = transfer(intent_from, intent_to, amount);
 
@@ -879,30 +902,32 @@ void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount)
 
 ```
 
-## Securities
+### Securities
 
-### Boot Steps
+#### Boot Steps
 
 ```c
 
 wget https://zerodha.nsdl.sec.mod -o zerodha.sec.mod
 
 load_module("zerodha.sec.mod");
-mount("india.zerodha.sec", "/udam/zerodha");
+mount("india.zerodha.sec", "/ul-provider-1/asset-managers/zerodha");
 
+```
+#### User account linking
+User links their Depository Participant account into this UL provider.
 
-wget https://npci.org.in/upi/rtp/mod -o upi.rtp.mod
+```c
+symlink("/ul-provider-1/zerodha/natarajan-dp-id-1", "/ul-provider-1/users/natarajan/dp-id-1");
 
-load_module("upi.rtp.mod");
-mount("india.upi.rtp", "/udam/upi");
 ```
 
-### Transaction program
+#### Transaction program
 
 ```c
 void sell_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) {
-    intent_id intent_from = intend(sprintf("/udam/zerodha/%s/%s", dp_id, isin), O_DEBIT);
-    intent_id intent_to = intend(sprintf("/udam/zerodha/nsdl/%s/%s", exchange, isin), O_CREDIT);
+    intent_id intent_from = intend(sprintf("/ul-provider-1/asset-managers/zerodha/%s/%s", dp_id, isin), O_DEBIT);
+    intent_id intent_to = intend(sprintf("/ul-provider-1/asset-managers/zerodha/nsdl/%s/%s", exchange, isin), O_CREDIT);
     int exit_code = transfer(intent_from, intent_to, quantity);
 
     if (exit_code == 0) {
@@ -916,8 +941,8 @@ void sell_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity)
 }
 
 void buy_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) {
-    intent_id intent_from = intend(sprintf("/udam/zerodha/nsdl/%s/%s", exchange, isin), O_DEBIT);
-    intent_id intent_to = intend(sprintf("/udam/zerodha/%s/%s", dp_id, isin), O_CREDIT);
+    intent_id intent_from = intend(sprintf("/ul-provider-1/asset-managers/zerodha/nsdl/%s/%s", exchange, isin), O_DEBIT);
+    intent_id intent_to = intend(sprintf("/ul-provider-1/asset-managers/zerodha/%s/%s", dp_id, isin), O_CREDIT);
     int exit_code = transfer(intent_from, intent_to, quantity);
 
     if (exit_code == 0) {
@@ -933,22 +958,33 @@ void buy_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) 
 
 ### Fractionalized Assets
 
+#### Boot Steps
 ```c
 wget https://bbmp.org.in/land/mod -o bbmp.land.mod
 
 load_module("bbmp.land.mod");
-mount("india.bbmp.land", "/udam/bbmp");
+mount("india.bbmp.land", "/ul-provider-1/asset-managers/bbmp");
 ```
-
+#### Transaction program
 ```c
 
 void make_fractions(char* land_id) {
-    intent_id intent_from = intend(sprintf("/udam/bbmp/%s", land_id), O_READ);
-    intent_id intent_to_1 = intend(sprintf("/udam/bbmp/%s.%d", land_id, 1), O_CREATE);
-    intent_id intent_to_2 = intend(sprintf("/udam/bbmp/%s.%d", land_id, 2), O_CREATE);
+    intent_id intent_from = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s", land_id), O_READ);
+    intent_id intent_to_1 = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 1), O_CREATE);
+    intent_id intent_to_2 = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 2), O_CREATE);
 
 
 
 }
 
+```
+
+### User Account Organization
+
+Users can create `directories` under their namespace to organize accounts.  They
+can move all upi accounts into one directory.
+
+```c
+mkdir("/ul-provider-1/users/natarajan/upi-accounts/");
+rename("/ul-provider-1/users/natarajan/dp-id-1", "/ul-provider-1/users/natarajan/upi-accounts/")
 ```
