@@ -854,8 +854,16 @@ like Google/Microsoft implementing the UL, the address might look like:
 * `/google-unified-ledger/`
 * `/microsoft-unified-ledger/`
 
-All the asset/token managers and users can be namespaced under the following
-paths respectively:
+The second component establishes the namespace for the other two entities in the
+system i.e. asset/token-managers and users.
+
+* `/google-unified-ledger/asset-managers`
+* `/google-unified-ledger/users`
+* `/microsoft-unified-ledger/asset-managers`
+* `/microsoft-unified-ledger/users`
+
+Specific token-manager and users can be referred under the above namespaces
+respectively:
 
 * `/google-unified-ledger/asset-managers/icici`
 * `/google-unified-ledger/users/user1`
