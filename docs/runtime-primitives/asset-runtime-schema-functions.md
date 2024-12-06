@@ -838,6 +838,30 @@ programs at all.
 - `userdel` Delete a user from the system
 - `chmod` Change the permissions of an asset
 
+## Addressing scheme
+
+There are three key entities/personas in the Finternet.  The UL itself which is the
+platform, the asset/token managers and the end-users.
+
+It is important that there is a unambiguous and global addressing scheme for
+each of the entities.
+
+One option to do so is to use the path approach to addressing these entities.
+
+The first component refers to the UL itself.  For e.g. if we have tech companies
+like Google/Microsoft implementing the UL, the address might look like:
+
+* `/google-unified-ledger/`
+* `/microsoft-unified-ledger/`
+
+All the asset/token managers and users can be namespaced under the following
+paths respectively:
+
+* `/google-unified-ledger/asset-managers/icici`
+* `/google-unified-ledger/users/user1`
+* `/microsoft-unified-ledger/asset-managers/chase`
+* `/microsoft-unified-ledger/users/user2`
+
 ## Example Workflows
 
 The following section covers an imagination of a new asset/token manager module
