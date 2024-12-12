@@ -64,14 +64,51 @@ Read/Write on UL, Read-Only on Token Manager Ledger).
 - support locking of assets out of transaction (except on the UL)
 - consume updates from UL (asynchronous mostly) to maintain consistency
 
-# UL Asset Schema and Common Interface
+## Sub-system mapping
 
-The inode construct forms the inspiration for the
-asset schema and the syscall interface forms the inspiration for the
-foundational functions that operate on assets. While we have not included
-credentials and documents under the scope for now - we believe they can have
-similar parallels. A later iteration of the document will address those
-use-cases.
+Based on the above types of assets, we have attempted to define the overall
+system architecture of the Unified Ledger. To do this, we have turned to the
+Linux file-system for inspiration. In Linux everything is treated as a file.
+The Linux filesystem supports a wide variety of files on a wide variety of
+filesystems stored on a wide variety of devices. In short, it is a
+demonstration of a model that provides diversity at multiple levels. In the UL
+land - the requirement is to support a variety of
+assets/credendentials/documents supported by various token managers on a variety
+of ledger infra.
+
+The following diagram attempts to show-case such a layered approach to the
+Unified Ledger system.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/block-diagram-dark.png">
+  <img src="./assets/block-diagram.png" alt="Description of the image">
+</picture>
+<!-- ![Block Diagram](./assets/block-diagram.png) -->
+
+## Key components
+
+- Application layer - this is the layer where programs/higher level asset workflows are written
+- Program/Workflow layer - Asset Program/Workflows that a Unified Ledger supports - could as simple as transfer or a complicated basket of assets transfer
+- Virtual Asset layer - this is the layer that offers a uniform interface to operate on assets across different asset types and different token managers
+- Virtual Ledger layer - this is the layer that offers a uniform interface to use any ledger infrastructure as the underlying store of assets/contracts.
+
+| Operating System    | Unified Ledger          |
+| ------------------- | ----------------------- |
+| Kernel              | Core UL                 |
+| VFS                 | Virtual Asset Layer     |
+| Specific Filesystem | Token Manager impl      |
+| Device Driver Layer | Virtual Ledger Layer    |
+| Device Driver       | Ledger infra impl       |
+| Hard Disk           | Ledger Infra / Database |
+| Process             | Composable workflows    |
+
+# Asset Schema and Functional Interface
+
+The inode construct forms the inspiration for the asset schema and the syscall
+interface forms the inspiration for the foundational functions that operate on
+assets. While we have not included credentials and documents under the scope for
+now - we believe they can have similar parallels. A later iteration of the
+document will address those use-cases.
 
 ## Asset Record - The Inode of the Assets world
 
@@ -324,43 +361,6 @@ pub struct Aacl {
 ```
 
 </details>
-
-## Sub-system mapping
-
-Based on the above types of assets, we have attempted to define the overall
-system architecture of the Unified Ledger. To do this, we have turned to the
-Linux file-system for inspiration. In Linux everything is treated as a file.
-The Linux filesystem supports a wide variety of files on a wide variety of
-filesystems stored on a wide variety of devices. In short, it is a
-demonstration of a model that provides diversity at multiple levels. In the UL
-land - the requirement is to support a variety of
-assets/credendentials/documents supported by various token managers on a variety
-of ledger infra.
-
-The following diagram attempts to show-case such a layered approach to the
-Unified Ledger system.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/block-diagram-dark.png">
-  <img src="./assets/block-diagram.png" alt="Description of the image">
-</picture>
-<!-- ![Block Diagram](./assets/block-diagram.png) -->
-
-## Key components
-
-- Application layer - this is the layer where programs/higher level asset workflows are written
-- Virtual Asset layer - this is the layer that offers a uniform interface to operate on assets across different asset types and different token managers
-- Virtual Ledger layer - this is the layer that offers a uniform interface to use any ledger infrastructure as the underlying store of assets/contracts.
-
-| Operating System    | Unified Ledger          |
-| ------------------- | ----------------------- |
-| Kernel              | Core UL                 |
-| VFS                 | Virtual Asset Layer     |
-| Specific Filesystem | Token Manager impl      |
-| Device Driver Layer | Virtual Ledger Layer    |
-| Device Driver       | Ledger infra impl       |
-| Hard Disk           | Ledger Infra / Database |
-| Process             | Composable workflows    |
 
 ## Functional primitives aka Virual Asset Operations (aka Syscalls)
 
@@ -645,9 +645,4 @@ can move all upi accounts into one directory.
 ```c
 mkdir("/ul-provider-1/users/natarajan/upi-accounts/");
 rename("/ul-provider-1/users/natarajan/upi-1", "/ul-provider-1/users/natarajan/upi-accounts/")
-```
-
-```c
-
-attach_program("/ul-provider-1/asset-managers/zerodha/xxxx", "transfer", char* code)
 ```
