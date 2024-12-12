@@ -485,17 +485,17 @@ like Google/Microsoft implementing the UL, the address might look like:
 The second component establishes the namespace for the other two entities in the
 system i.e. asset/token-managers and users.
 
-- `finternet://google-unified-ledger/asset-managers`
+- `finternet://google-unified-ledger/token-managers`
 - `finternet:/google-unified-ledger/users`
-- `finternet://microsoft-unified-ledger/asset-managers`
+- `finternet://microsoft-unified-ledger/token-managers`
 - `finternet://microsoft-unified-ledger/users`
 
 Specific token-manager and users can be referred under the above namespaces
 respectively:
 
-- `finternet://google-unified-ledger/asset-managers/icici`
+- `finternet://google-unified-ledger/token-managers/icici`
 - `finternet://google-unified-ledger/users/user1`
-- `finternet://microsoft-unified-ledger/asset-managers/chase`
+- `finternet://microsoft-unified-ledger/token-managers/chase`
 - `finternet://microsoft-unified-ledger/users/user2`
 
 # Example Workflows
@@ -524,7 +524,7 @@ This will result in the `finternet://ul-provider-1/users/{user1}/` namespace/dir
 wget https://npci.org.in/upi/rtp/mod -o upi.rtp.mod
 
 load_module("upi.rtp.mod");
-mount("india.upi.rtp", "finternet://ul-provider-1/asset-managers/upi");
+mount("india.upi.rtp", "finternet://ul-provider-1/token-managers/upi");
 ```
 
 ### User account linking
@@ -546,7 +546,7 @@ void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount)
 
     // other possible variant
     // intent_id intent_from = intend(sprintf("finternet://ul-provider-1/upi/alice@okicici", from), O_DEBIT);
-    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/asset-managers/upi/%s", to), O_CREDIT);
+    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/token-managers/upi/%s", to), O_CREDIT);
 
     int exit_code = transfer(intent_from, intent_to, amount);
 
@@ -571,7 +571,7 @@ void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount)
 wget https://zerodha.nsdl.sec.mod -o zerodha.sec.mod
 
 load_module("zerodha.sec.mod");
-mount("india.zerodha.sec", "finternet://ul-provider-1/asset-managers/zerodha");
+mount("india.zerodha.sec", "finternet://ul-provider-1/token-managers/zerodha");
 
 ```
 
@@ -588,8 +588,8 @@ symlink("finternet://ul-provider-1/zerodha/alice-dp-id-1", "finternet://ul-provi
 
 ```c
 void sell_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) {
-    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/asset-managers/zerodha/%s/%s", dp_id, isin), O_DEBIT);
-    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/asset-managers/zerodha/nsdl/%s/%s", exchange, isin), O_CREDIT);
+    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/token-managers/zerodha/%s/%s", dp_id, isin), O_DEBIT);
+    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/token-managers/zerodha/nsdl/%s/%s", exchange, isin), O_CREDIT);
     int exit_code = transfer(intent_from, intent_to, quantity);
 
     if (exit_code == 0) {
@@ -603,8 +603,8 @@ void sell_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity)
 }
 
 void buy_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) {
-    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/asset-managers/zerodha/nsdl/%s/%s", exchange, isin), O_DEBIT);
-    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/asset-managers/zerodha/%s/%s", dp_id, isin), O_CREDIT);
+    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/token-managers/zerodha/nsdl/%s/%s", exchange, isin), O_DEBIT);
+    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/token-managers/zerodha/%s/%s", dp_id, isin), O_CREDIT);
     int exit_code = transfer(intent_from, intent_to, quantity);
 
     if (exit_code == 0) {
@@ -626,7 +626,7 @@ void buy_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) 
 wget https://bbmp.org.in/land/mod -o bbmp.land.mod
 
 load_module("bbmp.land.mod");
-mount("india.bbmp.land", "finternet://ul-provider-1/asset-managers/bbmp");
+mount("india.bbmp.land", "finternet://ul-provider-1/token-managers/bbmp");
 ```
 
 ### Transaction program
@@ -634,9 +634,9 @@ mount("india.bbmp.land", "finternet://ul-provider-1/asset-managers/bbmp");
 ```c
 
 void make_fractions(char* land_id) {
-    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/asset-managers/bbmp/%s", land_id), O_READ);
-    intent_id intent_to_1 = intend(sprintf("finternet://ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 1), O_CREATE);
-    intent_id intent_to_2 = intend(sprintf("finternet://ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 2), O_CREATE);
+    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/token-managers/bbmp/%s", land_id), O_READ);
+    intent_id intent_to_1 = intend(sprintf("finternet://ul-provider-1/token-managers/bbmp/%s.%d", land_id, 1), O_CREATE);
+    intent_id intent_to_2 = intend(sprintf("finternet://ul-provider-1/token-managers/bbmp/%s.%d", land_id, 2), O_CREATE);
 }
 
 ```
