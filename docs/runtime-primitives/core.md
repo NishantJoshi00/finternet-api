@@ -1,7 +1,11 @@
 # UL - Overall system architecture
 
-This document details the overall system architecture of Unified Ledger to allow for diversity of
+This document attempts a high-level system architecture of Unified Ledger to allow for diversity of
 Assets, Token Managers and Ledger infrastructure.
+
+Note:
+Two topics that are not covered are user management/authentication/permissions -
+they will be added in a subsequent iteration.
 
 # Types of assets a UL should support
 
@@ -9,7 +13,8 @@ Before getting into the system architecture - it is useful to broadly categorize
 the different types of assets (based on their source of truth semantics) a UL
 should support. This type of categorization will allow Token Managers with
 varying degress of risk/functional appetite to onboard and also allow the UL to
-clearly establish to the users who is managing their asset.
+clearly establish to the users who is managing their asset.  Based on this we
+have categorized assets into the following:
 
 - Native Asset
 - Proxy Asset
@@ -17,7 +22,7 @@ clearly establish to the users who is managing their asset.
 
 ## Native Asset
 
-These are assets which are fully handed over to the UL by the Token Manager - unlocks max flexibility.
+These are assets which are fully handed over to the UL by the Token Manager - unlocks max flexibility as UL completely manages assets.
 
 ### UL responsibilities
 
@@ -31,7 +36,7 @@ These are assets which are fully handed over to the UL by the Token Manager - un
 
 ## Proxy Asset
 
-These are assets where Token Manager is fully involved in all transactions (including view balances).
+These are assets where Token Manager is fully involved in all transactions (including view balances) and UL plays the role of proxy.
 
 ### UL responsibilities
 
@@ -100,7 +105,7 @@ Unified Ledger system.
 | Device Driver Layer | Virtual Ledger Layer    |
 | Device Driver       | Ledger infra impl       |
 | Hard Disk           | Ledger Infra / Database |
-| Process             | Composable workflows    |
+| Process             | Program/Workflows       |
 
 # Asset Schema and Functional Interface
 
@@ -439,9 +444,11 @@ programs at all.
 > int credit(intent_d intent, uint32_t units); // it can error out
 > ```
 
-## Event Driven Hooks
+## Programmability via event driven hooks
 
 `eBPF` (extended Berkeley Packet Filter) is a powerful and flexible mechanism that provides us with an ability to attach programs to various hooks in the kernel. This allows us to run custom programs in response to events in the kernel. On the same note, having a mechanism that allows the users/token managers to attach programs that can be executed around the syscalls (`on_start`, `on_end`, `on_error`) can be a powerful tool to extend the capabilities of the UL.
+
+The `attach_program` syscall is used to this set this up.
 
 ```c
 int attach_program(char* path, char* hook, char* code);
@@ -464,35 +471,33 @@ The permissions for attaching the program are based on the owner of the program.
 
 ## Addressing scheme
 
-There are three key entities/personas in the Finternet. The UL itself which is the
-platform, the asset/token managers and the end-users.
-
-It is important that there is a unambiguous and global addressing scheme for
-each of the entities.
-
-One option to do so is to use the path approach to addressing these entities.
+There are three key entities/personas in the Finternet. The UL itself which is
+the platform, the asset/token managers and the end-users. It is important that
+there is a unambiguous and global addressing scheme for each of the entities.
+One option to do so is to use the path approach of the Linux file-system to
+addressing these entities.
 
 The first component refers to the UL itself. For e.g. if we have tech companies
 like Google/Microsoft implementing the UL, the address might look like:
 
-- `/google-unified-ledger/`
-- `/microsoft-unified-ledger/`
+- `finternet://google-unified-ledger/`
+- `finternet://microsoft-unified-ledger/`
 
 The second component establishes the namespace for the other two entities in the
 system i.e. asset/token-managers and users.
 
-- `/google-unified-ledger/asset-managers`
-- `/google-unified-ledger/users`
-- `/microsoft-unified-ledger/asset-managers`
-- `/microsoft-unified-ledger/users`
+- `finternet://google-unified-ledger/asset-managers`
+- `finternet:/google-unified-ledger/users`
+- `finternet://microsoft-unified-ledger/asset-managers`
+- `finternet://microsoft-unified-ledger/users`
 
 Specific token-manager and users can be referred under the above namespaces
 respectively:
 
-- `/google-unified-ledger/asset-managers/icici`
-- `/google-unified-ledger/users/user1`
-- `/microsoft-unified-ledger/asset-managers/chase`
-- `/microsoft-unified-ledger/users/user2`
+- `finternet://google-unified-ledger/asset-managers/icici`
+- `finternet://google-unified-ledger/users/user1`
+- `finternet://microsoft-unified-ledger/asset-managers/chase`
+- `finternet://microsoft-unified-ledger/users/user2`
 
 ## Example Workflows
 
@@ -528,7 +533,7 @@ mount("india.upi.rtp", "/ul-provider-1/asset-managers/upi");
 User links their UPI account into this UL provider.
 
 ```c
-symlink("/ul-provider-1/upi/natarajan@okicici", "/ul-provider-1/users/natarajan/upi-1");
+symlink("/ul-provider-1/upi/alice@okicici", "/ul-provider-1/users/alice/upi-1");
 
 ```
 
@@ -538,10 +543,10 @@ symlink("/ul-provider-1/upi/natarajan@okicici", "/ul-provider-1/users/natarajan/
 
 
 void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount) {
-    intent_id intent_from = intend(sprintf("/ul-provider-1/users/natarajan/vpa-1", from), O_DEBIT);
+    intent_id intent_from = intend(sprintf("/ul-provider-1/users/alice/vpa-1", from), O_DEBIT);
 
     // other possible variant
-    // intent_id intent_from = intend(sprintf("/ul-provider-1/upi/natarajan@okicici", from), O_DEBIT);
+    // intent_id intent_from = intend(sprintf("/ul-provider-1/upi/alice@okicici", from), O_DEBIT);
     intent_id intent_to = intend(sprintf("/ul-provider-1/asset-managers/upi/%s", to), O_CREDIT);
 
     int exit_code = transfer(intent_from, intent_to, amount);
@@ -576,7 +581,7 @@ mount("india.zerodha.sec", "/ul-provider-1/asset-managers/zerodha");
 User links their Depository Participant account into this UL provider.
 
 ```c
-symlink("/ul-provider-1/zerodha/natarajan-dp-id-1", "/ul-provider-1/users/natarajan/dp-id-1");
+symlink("/ul-provider-1/zerodha/alice-dp-id-1", "/ul-provider-1/users/alice/dp-id-1");
 
 ```
 
@@ -643,6 +648,6 @@ Users can create `directories` under their namespace to organize accounts. They
 can move all upi accounts into one directory.
 
 ```c
-mkdir("/ul-provider-1/users/natarajan/upi-accounts/");
-rename("/ul-provider-1/users/natarajan/upi-1", "/ul-provider-1/users/natarajan/upi-accounts/")
+mkdir("/ul-provider-1/users/alice/upi-accounts/");
+rename("/ul-provider-1/users/alice/upi-1", "/ul-provider-1/users/alice/upi-accounts/")
 ```
