@@ -393,7 +393,7 @@ intent_d intend(void* asset_id, uint32_t intent); // intent is a bitmask of the 
 This is similar to the `close` syscall in linux
 
 ```c
-int* done(intent_d intent); // it can error out
+int done(intent_d intent); // it can error out
   `
 ```
 
@@ -402,7 +402,7 @@ int* done(intent_d intent); // it can error out
 This is the functional primitive to perform transfers between a debit and a credit intent.
 
 ```c
-int* transfer(intent_d from, intent_d to, uint32_t units); // it can error out
+int transfer(intent_d from, intent_d to, uint32_t units); // it can error out
 ```
 
 ### view
@@ -411,7 +411,7 @@ This is a functional primitive that can be used to retrieve balance for that
 particular asset.
 
 ```c
-int* view(intent_d intent); // it can error out
+int view(intent_d intent); // it can error out
 ```
 
 ### load_module
@@ -419,7 +419,7 @@ int* view(intent_d intent); // it can error out
 This can be associated with adding support for a new asset on the system (or onboarding a remote asset)
 
 ```c
-int* load_module(char* module_path);
+int load_module(char* module_path);
 ```
 
 ### debit / credit
@@ -430,13 +430,13 @@ programs at all.
 > `debit`
 >
 > ```c
-> int* debit(intent_d intent, uint32_t units); // it can error out
+> int debit(intent_d intent, uint32_t units); // it can error out
 > ```
 >
 > `credit`
 >
 > ```c
-> int* credit(intent_d intent, uint32_t units); // it can error out
+> int credit(intent_d intent, uint32_t units); // it can error out
 > ```
 
 ## Event Driven Hooks
@@ -444,7 +444,7 @@ programs at all.
 `eBPF` (extended Berkeley Packet Filter) is a powerful and flexible mechanism that provides us with an ability to attach programs to various hooks in the kernel. This allows us to run custom programs in response to events in the kernel. On the same note, having a mechanism that allows the users/token managers to attach programs that can be executed around the syscalls (`on_start`, `on_end`, `on_error`) can be a powerful tool to extend the capabilities of the UL.
 
 ```c
-int* attach_program(char* path, char* hook, char* code);
+int attach_program(char* path, char* hook, char* code);
 ```
 
 These programs can provide validation, logging, and other custom logic around the syscalls for both the token managers and the users. Functionalities like, `amount` validation before a transfer, ability to track high valued transaction for the banks and other auditability features can be implemented using this mechanism.
