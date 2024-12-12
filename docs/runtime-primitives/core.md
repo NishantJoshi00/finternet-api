@@ -393,7 +393,7 @@ This is analogous to the open system call indicating the user's intent to perfor
 intent_d intend(void* asset_id, uint32_t intent); // intent is a bitmask of the operations that the user wants to perform
 ```
 
-### `done`
+### done
 
 This is similar to the `close` syscall in linux
 
