@@ -7,7 +7,7 @@ Note:
 Two topics that are not covered are user management/authentication/permissions -
 they will be added in a subsequent iteration.
 
-# Types of assets a UL should support
+# Types of assets UL should support
 
 Before getting into the system architecture - it is useful to broadly categorize
 the different types of assets (based on their source of truth semantics) a UL
