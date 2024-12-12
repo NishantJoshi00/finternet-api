@@ -458,7 +458,7 @@ These programs can provide validation, logging, and other custom logic around th
 
 The permissions for attaching the program are based on the owner of the program. If the owner is a user, the program can only be attached to the assets owned by the user. If the owner is a token manager, the program can be attached to the assets managed by the token manager.
 
-### Other syscall equivalents
+## Other syscall equivalents
 
 - `unload_module` this can be associated with deleting an asset from the system (or offboarding a remote asset)
 - `mod_resolv` Resolve the module to be used for performing fundamental operations on a specific asset.
@@ -469,7 +469,7 @@ The permissions for attaching the program are based on the owner of the program.
 - `userdel` Delete a user from the system
 - `chmod` Change the permissions of an asset
 
-## Addressing scheme
+# Addressing scheme
 
 There are three key entities/personas in the Finternet. The UL itself which is
 the platform, the asset/token managers and the end-users. It is important that
@@ -499,13 +499,13 @@ respectively:
 - `finternet://microsoft-unified-ledger/asset-managers/chase`
 - `finternet://microsoft-unified-ledger/users/user2`
 
-## Example Workflows
+# Example Workflows
 
 The following section covers an imagination of a new asset/token manager module
 (for a couple of use-cases) is added to the system and how the underlying
 primitive calls can be invoked to compose a transaction.
 
-### User Onboarding
+## User Onboarding
 
 When a user (user1) signs up with a particular UL provider (say
 `ul-provider-1`), the equivalent of the `useradd` in a Linux system happens.
@@ -516,9 +516,9 @@ useradd user1
 
 This will result in the `/ul-provider-1/users/{user1}/` namespace/directory created.
 
-### Money
+## Money
 
-#### Boot Steps
+### Boot Steps
 
 ```c
 
@@ -528,7 +528,7 @@ load_module("upi.rtp.mod");
 mount("india.upi.rtp", "/ul-provider-1/asset-managers/upi");
 ```
 
-#### User account linking
+### User account linking
 
 User links their UPI account into this UL provider.
 
@@ -537,7 +537,7 @@ symlink("/ul-provider-1/upi/alice@okicici", "/ul-provider-1/users/alice/upi-1");
 
 ```
 
-#### Transaction program
+### Transaction program
 
 ```c
 
@@ -563,9 +563,9 @@ void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount)
 
 ```
 
-### Securities
+## Securities
 
-#### Boot Steps
+### Boot Steps
 
 ```c
 
@@ -576,7 +576,7 @@ mount("india.zerodha.sec", "/ul-provider-1/asset-managers/zerodha");
 
 ```
 
-#### User account linking
+### User account linking
 
 User links their Depository Participant account into this UL provider.
 
@@ -585,7 +585,7 @@ symlink("/ul-provider-1/zerodha/alice-dp-id-1", "/ul-provider-1/users/alice/dp-i
 
 ```
 
-#### Transaction program
+### Transaction program
 
 ```c
 void sell_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) {
@@ -619,9 +619,9 @@ void buy_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) 
 }
 ```
 
-### Fractionalized Assets
+## Fractionalized Assets
 
-#### Boot Steps
+### Boot Steps
 
 ```c
 wget https://bbmp.org.in/land/mod -o bbmp.land.mod
@@ -630,7 +630,7 @@ load_module("bbmp.land.mod");
 mount("india.bbmp.land", "/ul-provider-1/asset-managers/bbmp");
 ```
 
-#### Transaction program
+### Transaction program
 
 ```c
 
@@ -642,7 +642,7 @@ void make_fractions(char* land_id) {
 
 ```
 
-### User Account Organization
+## User Account Organization
 
 Users can create `directories` under their namespace to organize accounts. They
 can move all upi accounts into one directory.
