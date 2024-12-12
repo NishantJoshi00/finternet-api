@@ -340,7 +340,11 @@ of ledger infra.
 The following diagram attempts to show-case such a layered approach to the
 Unified Ledger system.
 
-//TODO Insert diagram
+<!-- <picture> -->
+<!--   <source media="(prefers-color-scheme: dark)" srcset=""> -->
+<!--   <img src="./assets/block-diagram.png" alt="Description of the image"> -->
+<!-- </picture> -->
+![Block Diagram](./assets/block-diagram.png)
 
 ## Key components
 
