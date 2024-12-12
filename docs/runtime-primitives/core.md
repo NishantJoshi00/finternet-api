@@ -514,7 +514,7 @@ When a user (user1) signs up with a particular UL provider (say
 useradd user1
 ```
 
-This will result in the `/ul-provider-1/users/{user1}/` namespace/directory created.
+This will result in the `finternet://ul-provider-1/users/{user1}/` namespace/directory created.
 
 ## Money
 
@@ -525,7 +525,7 @@ This will result in the `/ul-provider-1/users/{user1}/` namespace/directory crea
 wget https://npci.org.in/upi/rtp/mod -o upi.rtp.mod
 
 load_module("upi.rtp.mod");
-mount("india.upi.rtp", "/ul-provider-1/asset-managers/upi");
+mount("india.upi.rtp", "finternet://ul-provider-1/asset-managers/upi");
 ```
 
 ### User account linking
@@ -533,7 +533,7 @@ mount("india.upi.rtp", "/ul-provider-1/asset-managers/upi");
 User links their UPI account into this UL provider.
 
 ```c
-symlink("/ul-provider-1/upi/alice@okicici", "/ul-provider-1/users/alice/upi-1");
+symlink("finternet://ul-provider-1/upi/alice@okicici", "finternet://ul-provider-1/users/alice/upi-1");
 
 ```
 
@@ -543,11 +543,11 @@ symlink("/ul-provider-1/upi/alice@okicici", "/ul-provider-1/users/alice/upi-1");
 
 
 void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount) {
-    intent_id intent_from = intend(sprintf("/ul-provider-1/users/alice/vpa-1", from), O_DEBIT);
+    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/users/alice/vpa-1", from), O_DEBIT);
 
     // other possible variant
-    // intent_id intent_from = intend(sprintf("/ul-provider-1/upi/alice@okicici", from), O_DEBIT);
-    intent_id intent_to = intend(sprintf("/ul-provider-1/asset-managers/upi/%s", to), O_CREDIT);
+    // intent_id intent_from = intend(sprintf("finternet://ul-provider-1/upi/alice@okicici", from), O_DEBIT);
+    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/asset-managers/upi/%s", to), O_CREDIT);
 
     int exit_code = transfer(intent_from, intent_to, amount);
 
@@ -572,7 +572,7 @@ void icici_account_transfer(char* from_upi_id, char* to_upi_id, uint32_t amount)
 wget https://zerodha.nsdl.sec.mod -o zerodha.sec.mod
 
 load_module("zerodha.sec.mod");
-mount("india.zerodha.sec", "/ul-provider-1/asset-managers/zerodha");
+mount("india.zerodha.sec", "finternet://ul-provider-1/asset-managers/zerodha");
 
 ```
 
@@ -581,7 +581,7 @@ mount("india.zerodha.sec", "/ul-provider-1/asset-managers/zerodha");
 User links their Depository Participant account into this UL provider.
 
 ```c
-symlink("/ul-provider-1/zerodha/alice-dp-id-1", "/ul-provider-1/users/alice/dp-id-1");
+symlink("finternet://ul-provider-1/zerodha/alice-dp-id-1", "finternet://ul-provider-1/users/alice/dp-id-1");
 
 ```
 
@@ -589,8 +589,8 @@ symlink("/ul-provider-1/zerodha/alice-dp-id-1", "/ul-provider-1/users/alice/dp-i
 
 ```c
 void sell_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) {
-    intent_id intent_from = intend(sprintf("/ul-provider-1/asset-managers/zerodha/%s/%s", dp_id, isin), O_DEBIT);
-    intent_id intent_to = intend(sprintf("/ul-provider-1/asset-managers/zerodha/nsdl/%s/%s", exchange, isin), O_CREDIT);
+    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/asset-managers/zerodha/%s/%s", dp_id, isin), O_DEBIT);
+    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/asset-managers/zerodha/nsdl/%s/%s", exchange, isin), O_CREDIT);
     int exit_code = transfer(intent_from, intent_to, quantity);
 
     if (exit_code == 0) {
@@ -604,8 +604,8 @@ void sell_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity)
 }
 
 void buy_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) {
-    intent_id intent_from = intend(sprintf("/ul-provider-1/asset-managers/zerodha/nsdl/%s/%s", exchange, isin), O_DEBIT);
-    intent_id intent_to = intend(sprintf("/ul-provider-1/asset-managers/zerodha/%s/%s", dp_id, isin), O_CREDIT);
+    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/asset-managers/zerodha/nsdl/%s/%s", exchange, isin), O_DEBIT);
+    intent_id intent_to = intend(sprintf("finternet://ul-provider-1/asset-managers/zerodha/%s/%s", dp_id, isin), O_CREDIT);
     int exit_code = transfer(intent_from, intent_to, quantity);
 
     if (exit_code == 0) {
@@ -627,7 +627,7 @@ void buy_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) 
 wget https://bbmp.org.in/land/mod -o bbmp.land.mod
 
 load_module("bbmp.land.mod");
-mount("india.bbmp.land", "/ul-provider-1/asset-managers/bbmp");
+mount("india.bbmp.land", "finternet://ul-provider-1/asset-managers/bbmp");
 ```
 
 ### Transaction program
@@ -635,9 +635,9 @@ mount("india.bbmp.land", "/ul-provider-1/asset-managers/bbmp");
 ```c
 
 void make_fractions(char* land_id) {
-    intent_id intent_from = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s", land_id), O_READ);
-    intent_id intent_to_1 = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 1), O_CREATE);
-    intent_id intent_to_2 = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 2), O_CREATE);
+    intent_id intent_from = intend(sprintf("finternet://ul-provider-1/asset-managers/bbmp/%s", land_id), O_READ);
+    intent_id intent_to_1 = intend(sprintf("finternet://ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 1), O_CREATE);
+    intent_id intent_to_2 = intend(sprintf("finternet://ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 2), O_CREATE);
 }
 
 ```
@@ -648,6 +648,6 @@ Users can create `directories` under their namespace to organize accounts. They
 can move all upi accounts into one directory.
 
 ```c
-mkdir("/ul-provider-1/users/alice/upi-accounts/");
-rename("/ul-provider-1/users/alice/upi-1", "/ul-provider-1/users/alice/upi-accounts/")
+mkdir("finternet://ul-provider-1/users/alice/upi-accounts/");
+rename("finternet://ul-provider-1/users/alice/upi-1", "finternet://ul-provider-1/users/alice/upi-accounts/")
 ```
