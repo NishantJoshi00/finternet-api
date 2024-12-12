@@ -99,7 +99,6 @@ Unified Ledger system.
 
 | Operating System    | Unified Ledger          |
 | ------------------- | ----------------------- |
-| Kernel              | Core UL                 |
 | VFS                 | Virtual Asset Layer     |
 | Specific Filesystem | Token Manager impl      |
 | Device Driver Layer | Virtual Ledger Layer    |
