@@ -69,7 +69,7 @@ Read/Write on UL, Read-Only on Token Manager Ledger).
 - support locking of assets out of transaction (except on the UL)
 - consume updates from UL (asynchronous mostly) to maintain consistency
 
-## Sub-system mapping
+# Sub-system mapping
 
 Based on the above types of assets, we have attempted to define the overall
 system architecture of the Unified Ledger. To do this, we have turned to the
