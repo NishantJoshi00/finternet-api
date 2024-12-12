@@ -7,81 +7,97 @@ Assets, Token Managers and Ledger infrastructure.
 
 Before getting into the system architecture - it is useful to broadly categorize
 the different types of assets (based on their source of truth semantics) a UL
-should support.  This type of categorization will allow Token Managers with
+should support. This type of categorization will allow Token Managers with
 varying degress of risk/functional appetite to onboard and also allow the UL to
 clearly establish to the users who is managing their asset.
 
+- Native Asset
+- Proxy Asset
+- Custodial Asset
+
 ## Native Asset
+
 These are assets which are fully handed over to the UL by the Token Manager - unlocks max flexibility.
 
 ### UL responsibilities
+
 - source of truth
 - manage transactions
 - publish proofs to Immutable Proof Store (IPS)
 
 ### Token Manager responsibilities
+
 - Minimal role - can sign up for observing transactions
 
 ## Proxy Asset
+
 These are assets where Token Manager is fully involved in all transactions (including view balances).
 
 ### UL responsibilities
+
 - facilitate transactions
 - publish proofs to Immutable Proof Store for transactions facilitated to Immutable Proof Store.
 
 ### Token Manager responsibilities
+
 - Source of truth for asset
 - Supports full UL Virtual Ledger interface
 
 ## Custodial Asset
+
 These are types of assets where Token Manager wants UL to unlock faster
-settlement from user-perspective but keep their source in sync.  In this model
+settlement from user-perspective but keep their source in sync. In this model
 the Token Manager also guarantees that this asset is locked out at the Token
 Manager end for any transactions as long UL has the custody of the asset i.e.
 Read/Write on UL, Read-Only on Token Manager Ledger).
 
 ### UL responsibilities
+
 - source of truth
 - facilitate transactions
 - locks out asset on Token Manager
 - publish proofs to Immutable Proof Store for transactions facilitated to Immutable Proof Store.
 
 ### Token Manager responsibilities
+
 - source of truth
 - support locking of assets out of transaction (except on the UL)
 - consume updates from UL (asynchronous mostly) to maintain consistency
-
 
 # UL Asset Schema and Common Interface
 
 The inode construct forms the inspiration for the
 asset schema and the syscall interface forms the inspiration for the
-foundational functions that operate on assets.  While we have not included
+foundational functions that operate on assets. While we have not included
 credentials and documents under the scope for now - we believe they can have
-similar parallels.  A later iteration of the document will address those
+similar parallels. A later iteration of the document will address those
 use-cases.
 
 ## Asset Record - The Inode of the Assets world
 
 Taking inspiration from the inode primitive in the Linux eco-system, we have
-come up with a potential struct for the asset_record.  Following is the summary
+come up with a potential struct for the asset_record. Following is the summary
 of what kind of information is captured in the asset_record.
 
 1. Asset Types (analogous to file types):
+
    - Modeled after the document's discussion of Real World Assets (RWA)
    - Includes physical and digital asset types
    - Supports flags for transferability, divisibility, and regulatory status
 
 2. Metadata Fields:
+
    - Captures ownership (similar to uid/gid in inode)
    - Tracks creation, transfer, and verification times
    - Includes references to schemas, profiles, and authorizations
 
 3. Flags and Status:
+
    - Represents asset lifecycle and compliance states
    - Allows for tokenization, locking, verification flags
 
 4. Network and Transfer Metadata:
+
    - Reflects the cross-network transfer concepts in the original document
    - Tracks origin network and permitted transfer networks
 
@@ -90,6 +106,7 @@ of what kind of information is captured in the asset_record.
    - Supports the document's emphasis on verifiable, signed records
 
 Key differences from traditional inode:
+
 - Value-centric instead of storage-centric
 - More extensive metadata about asset origin and transferability
 - Explicit support for fractional ownership
@@ -105,54 +122,52 @@ struct asset_record {
     // Unique identification
     unsigned long a_id;                     // Unique asset identifier
     enum asset_type a_type;                 // Type of asset
-    
+
     // Ownership and access control
     unsigned int a_owner_uid;               // User ID of primary owner
     unsigned int a_owner_gid;               // Group ID associated with asset
     unsigned int a_creator_uid;             // User ID of asset creator
 
-    // TODO: capture permissions for the above and user specialization
-    
     // Asset value and metadata
     unsigned long long a_value;             // Monetary value (in smallest currency unit)
     unsigned long long a_total_supply;      // Total supply if fractional
     unsigned long long a_circulating_supply; // Currently available supply
-    
+
     // Temporal metadata
     unsigned long a_creation_time;          // Time asset was first recorded
     unsigned long a_last_transfer_time;     // Time of most recent transfer
     unsigned long a_verification_time;      // Time of last verification
-    
+
     // Schema and profile references
     char *a_schema_ref;                     // Reference to asset definition schema
     char *a_profile_ref;                    // Reference to specific asset profile
-    
+
     // Authorization and compliance
     char *a_issuance_auth_ref;              // Reference to token issuance authorization
     char *a_record_authority_ref;           // Reference to asset record authority
-    
+
     // Asset-specific flags
     enum asset_flags a_flags;               // Status and lifecycle flags
-    
+
     // Network and transfer metadata
     char *a_origin_network;                 // Network of asset origin
 
    // Extensibility
     void *a_private;                        // Private data for specific asset types
-    
+
     // Cryptographic integrity
     unsigned char a_signature[64];          // Digital signature of asset record
-    
+
     // Compliance and regulatory metadata
     unsigned int[*] a_jurisdiction;            // Jurisdiction identifiers
 
     enum asset_compliance_flags a_compliance_flags;       // Regulatory compliance indicators
 
-    // TODO: remove this (maybe)
     char **a_permitted_networks;            // Networks where asset can be transferred
     size_t a_network_count;                 // Number of permitted networks
 
-    // TODO: support for linking verifiable credentials
+    void *a_credentials;                    // Linked verifiable credentials
+    void *a_presentations;                  // Linked verifiable presentations
 };
 
 
@@ -217,17 +232,106 @@ enum asset_compliance_flags {
     COMPLIANCE_COMMODITY_TRADING  = 0x00200000,  // Complies with commodity trading rules
     COMPLIANCE_INTELLECTUAL_PROP  = 0x00400000,  // Meets intellectual property transfer regulations
 };
+```
+
+For assets that are represented as inodes, the following structure can define the access control mechanism for the asset.
+
+```rust
+
+/// Represents who the access control entry applies to
+#[derive(Debug, Clone, PartialEq)]
+pub enum AaceTagType {
+    Owner,
+    Group,
+    User,
+    TokenManager,
+    Everyone,
+}
+
+/// Identifier for different types of entities
+#[derive(Debug, Clone)]
+pub enum AaceId {
+    UserId(u32),
+    GroupId(u32),
+    TokenManagerId(String),
+}
+
+/// Permission masks for asset operations
+#[derive(Debug, Clone, PartialEq)]
+pub enum AacePerms {
+    // Basic permissions
+    View       = 1 << 0,  // Can view asset details
+    Transfer   = 1 << 1,  // Can transfer asset
+    Modify     = 1 << 2,  // Can modify asset metadata
+    Lock       = 1 << 3,  // Can lock/unlock asset
+
+    // Advanced permissions
+    Tokenize   = 1 << 4,  // Can tokenize asset
+    Fraction   = 1 << 5,  // Can fractionalize asset
+    Delegate   = 1 << 6,  // Can delegate permissions
+
+    // Administrative permissions
+    Admin      = 1 << 7,  // Can change ACLs
+    Verify     = 1 << 8,  // Can verify asset
+    Destroy    = 1 << 9,  // Can destroy asset
+
+    // Token Manager specific
+    Custody    = 1 << 10, // Can take custody
+    Validate   = 1 << 11, // Can validate transactions
+    Observe    = 1 << 12, // Can observe transactions
+}
+
+bitflags! {
+    /// Flags that modify entry behavior
+    pub struct AaceFlags: u32 {
+        const INHERIT           = 0b00000001; // Inherit to derived assets
+        const NO_PROPAGATE      = 0b00000010; // Don't propagate further
+        const AUDIT_SUCCESS     = 0b00000100; // Log successful access
+        const AUDIT_FAILURE     = 0b00001000; // Log failed access
+        const TEMPORARY         = 0b00010000; // Temporary permission
+        const RESTRICTED        = 0b00100000; // Restricted by compliance
+    }
+}
+
+/// Additional constraints for access control
+#[derive(Debug, Clone)]
+pub struct AaceConstraints {
+    pub start_time: time::SystemTime,       // When permission becomes valid
+    pub end_time: time::SystemTime,         // When permission expires
+    pub max_value: u64,                     // Maximum transaction value
+    pub max_uses: u32,                      // Maximum number of uses
+    pub jurisdiction: u32,                  // Jurisdiction where valid
+}
+
+/// Asset Access Control Entry
+#[derive(Debug, Clone)]
+pub struct Aace {
+    pub tag: AaceTagType,
+    pub id: AaceId,
+    pub permissions: Vec<AacePerms>,
+    pub flags: AaceFlags,
+    pub constraints: AaceConstraints,
+}
+
+/// Asset Access Control List
+#[derive(Debug, Clone)]
+pub struct Aacl {
+    pub count: u32,
+    pub flags: AaceFlags,
+    pub entries: Vec<Aace>,
+}
 
 ```
+
 </details>
 
 ## Sub-system mapping
 
 Based on the above types of assets, we have attempted to define the overall
 system architecture of the Unified Ledger. To do this, we have turned to the
-Linux file-system for inspiration.  In Linux everything is treated as a file.
+Linux file-system for inspiration. In Linux everything is treated as a file.
 The Linux filesystem supports a wide variety of files on a wide variety of
-filesystems stored on a wide variety of devices.  In short, it is a
+filesystems stored on a wide variety of devices. In short, it is a
 demonstration of a model that provides diversity at multiple levels. In the UL
 land - the requirement is to support a variety of
 assets/credendentials/documents supported by various token managers on a variety
@@ -240,25 +344,24 @@ Unified Ledger system.
 
 ## Key components
 
-* Application layer - this is the layer where programs/higher level asset workflows are written
-* Virtual Asset layer - this is the layer that offers a uniform interface to operate on assets across different asset types and different token managers
-* Virtual Ledger layer - this is the layer that offers a uniform interface to use any ledger infrastructure as the underlying store of assets/contracts.
+- Application layer - this is the layer where programs/higher level asset workflows are written
+- Virtual Asset layer - this is the layer that offers a uniform interface to operate on assets across different asset types and different token managers
+- Virtual Ledger layer - this is the layer that offers a uniform interface to use any ledger infrastructure as the underlying store of assets/contracts.
 
-
-|  Operating System           | Unified Ledger          |
-| --------------------------- | ----------------------- |
-| Kernel                      | Core UL                 |
-| VFS                         | Virtual Asset Layer     |
-| Specific Filesystem         | Token Manager impl      |
-| Device Driver Layer         | Virtual Ledger Layer    |
-| Device Driver               | Ledger infra impl       |
-| Hard Disk                   | Ledger Infra / Database |
-| Process                     | Composable workflows    |
-
+| Operating System    | Unified Ledger          |
+| ------------------- | ----------------------- |
+| Kernel              | Core UL                 |
+| VFS                 | Virtual Asset Layer     |
+| Specific Filesystem | Token Manager impl      |
+| Device Driver Layer | Virtual Ledger Layer    |
+| Device Driver       | Ledger infra impl       |
+| Hard Disk           | Ledger Infra / Database |
+| Process             | Composable workflows    |
 
 ## Functional primitives aka Virual Asset Operations (aka Syscalls)
+
 The following section describes potential functional primitives that higher
-level applications will need to perform operations on the assets.  These
+level applications will need to perform operations on the assets. These
 functional primitives are supported by the Virtual Asset Layer.
 
 ```c
@@ -274,59 +377,75 @@ enum IntentPurpose {
 ```
 
 ### intend
+
 This is analogous to the open system call indicating the user's intent to perform an operation.
-  ```c
-  intent_d intend(void* asset_id, uint32_t intent); // intent is a bitmask of the operations that the user wants to perform
-  ```
+
+```c
+intent_d intend(void* asset_id, uint32_t intent); // intent is a bitmask of the operations that the user wants to perform
+```
 
 ### `done`
+
 This is similar to the `close` syscall in linux
-  ```c
-  int* done(intent_d intent); // it can error out
-    `
-  ```
+
+```c
+int* done(intent_d intent); // it can error out
+  `
+```
 
 ### transfer
+
 This is the functional primitive to perform transfers between a debit and a credit intent.
-  ```c
-  int* transfer(intent_d from, intent_d to, uint32_t units); // it can error out
-  ```
+
+```c
+int* transfer(intent_d from, intent_d to, uint32_t units); // it can error out
+```
 
 ### view
+
 This is a functional primitive that can be used to retrieve balance for that
 particular asset.
-  ```c
-  int* view(intent_d intent); // it can error out
-  ```
 
-### execute
-TBD
-  ```c
-  int* execute();
-  ```
-
+```c
+int* view(intent_d intent); // it can error out
+```
 
 ### load_module
+
 This can be associated with adding support for a new asset on the system (or onboarding a remote asset)
-  ```c
-    TBD
-  ```
+
+```c
+int* load_module(char* module_path);
+```
 
 ### debit / credit
+
 We are unsure at this moment if the underlying debit/credit operations should be exposed to
 programs at all.
 
-  > `debit`
-  >
-  > ```c
-  > int* debit(intent_d intent, uint32_t units); // it can error out
-  > ```
-  >
-  > `credit`
-  >
-  > ```c
-  > int* credit(intent_d intent, uint32_t units); // it can error out
-  > ```
+> `debit`
+>
+> ```c
+> int* debit(intent_d intent, uint32_t units); // it can error out
+> ```
+>
+> `credit`
+>
+> ```c
+> int* credit(intent_d intent, uint32_t units); // it can error out
+> ```
+
+## Event Driven Hooks
+
+`eBPF` (extended Berkeley Packet Filter) is a powerful and flexible mechanism that provides us with an ability to attach programs to various hooks in the kernel. This allows us to run custom programs in response to events in the kernel. On the same note, having a mechanism that allows the users/token managers to attach programs that can be executed around the syscalls (`on_start`, `on_end`, `on_error`) can be a powerful tool to extend the capabilities of the UL.
+
+```c
+int* attach_program(char* path, char* hook, char* code);
+```
+
+These programs can provide validation, logging, and other custom logic around the syscalls for both the token managers and the users. Functionalities like, `amount` validation before a transfer, ability to track high valued transaction for the banks and other auditability features can be implemented using this mechanism.
+
+The permissions for attaching the program are based on the owner of the program. If the owner is a user, the program can only be attached to the assets owned by the user. If the owner is a token manager, the program can be attached to the assets managed by the token manager.
 
 ### Other syscall equivalents
 
@@ -341,7 +460,7 @@ programs at all.
 
 ## Addressing scheme
 
-There are three key entities/personas in the Finternet.  The UL itself which is the
+There are three key entities/personas in the Finternet. The UL itself which is the
 platform, the asset/token managers and the end-users.
 
 It is important that there is a unambiguous and global addressing scheme for
@@ -349,27 +468,27 @@ each of the entities.
 
 One option to do so is to use the path approach to addressing these entities.
 
-The first component refers to the UL itself.  For e.g. if we have tech companies
+The first component refers to the UL itself. For e.g. if we have tech companies
 like Google/Microsoft implementing the UL, the address might look like:
 
-* `/google-unified-ledger/`
-* `/microsoft-unified-ledger/`
+- `/google-unified-ledger/`
+- `/microsoft-unified-ledger/`
 
 The second component establishes the namespace for the other two entities in the
 system i.e. asset/token-managers and users.
 
-* `/google-unified-ledger/asset-managers`
-* `/google-unified-ledger/users`
-* `/microsoft-unified-ledger/asset-managers`
-* `/microsoft-unified-ledger/users`
+- `/google-unified-ledger/asset-managers`
+- `/google-unified-ledger/users`
+- `/microsoft-unified-ledger/asset-managers`
+- `/microsoft-unified-ledger/users`
 
 Specific token-manager and users can be referred under the above namespaces
 respectively:
 
-* `/google-unified-ledger/asset-managers/icici`
-* `/google-unified-ledger/users/user1`
-* `/microsoft-unified-ledger/asset-managers/chase`
-* `/microsoft-unified-ledger/users/user2`
+- `/google-unified-ledger/asset-managers/icici`
+- `/google-unified-ledger/users/user1`
+- `/microsoft-unified-ledger/asset-managers/chase`
+- `/microsoft-unified-ledger/users/user2`
 
 ## Example Workflows
 
@@ -388,7 +507,6 @@ useradd user1
 
 This will result in the `/ul-provider-1/users/{user1}/` namespace/directory created.
 
-
 ### Money
 
 #### Boot Steps
@@ -402,6 +520,7 @@ mount("india.upi.rtp", "/ul-provider-1/asset-managers/upi");
 ```
 
 #### User account linking
+
 User links their UPI account into this UL provider.
 
 ```c
@@ -447,7 +566,9 @@ load_module("zerodha.sec.mod");
 mount("india.zerodha.sec", "/ul-provider-1/asset-managers/zerodha");
 
 ```
+
 #### User account linking
+
 User links their Depository Participant account into this UL provider.
 
 ```c
@@ -492,28 +613,29 @@ void buy_securities(char* dp_id, char* exchange, char* isin, uint32_t quantity) 
 ### Fractionalized Assets
 
 #### Boot Steps
+
 ```c
 wget https://bbmp.org.in/land/mod -o bbmp.land.mod
 
 load_module("bbmp.land.mod");
 mount("india.bbmp.land", "/ul-provider-1/asset-managers/bbmp");
 ```
+
 #### Transaction program
+
 ```c
 
 void make_fractions(char* land_id) {
     intent_id intent_from = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s", land_id), O_READ);
     intent_id intent_to_1 = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 1), O_CREATE);
     intent_id intent_to_2 = intend(sprintf("/ul-provider-1/asset-managers/bbmp/%s.%d", land_id, 2), O_CREATE);
-
-    // TBD - this flow is incomplete
 }
 
 ```
 
 ### User Account Organization
 
-Users can create `directories` under their namespace to organize accounts.  They
+Users can create `directories` under their namespace to organize accounts. They
 can move all upi accounts into one directory.
 
 ```c
@@ -521,8 +643,7 @@ mkdir("/ul-provider-1/users/natarajan/upi-accounts/");
 rename("/ul-provider-1/users/natarajan/upi-1", "/ul-provider-1/users/natarajan/upi-accounts/")
 ```
 
-
-```
+```c
 
 attach_program("/ul-provider-1/asset-managers/zerodha/xxxx", "transfer", char* code)
 ```
