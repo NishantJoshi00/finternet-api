@@ -444,7 +444,7 @@ programs at all.
 > int credit(intent_d intent, uint32_t units); // it can error out
 > ```
 
-## Programmability via event driven hooks
+## Asset programmability via event driven hooks
 
 `eBPF` (extended Berkeley Packet Filter) is a powerful and flexible mechanism that provides us with an ability to attach programs to various hooks in the kernel. This allows us to run custom programs in response to events in the kernel. On the same note, having a mechanism that allows the users/token managers to attach programs that can be executed around the syscalls (`on_start`, `on_end`, `on_error`) can be a powerful tool to extend the capabilities of the UL.
 
