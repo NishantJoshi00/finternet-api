@@ -73,13 +73,12 @@ Read/Write on UL, Read-Only on Token Manager Ledger).
 
 Based on the above types of assets, we have attempted to define the overall
 system architecture of the Unified Ledger. To do this, we have turned to the
-Linux file-system for inspiration. In Linux everything is treated as a file.
-The Linux filesystem supports a wide variety of files on a wide variety of
-filesystems stored on a wide variety of devices. In short, it is a
-demonstration of a model that provides diversity at multiple levels. In the UL
-land - the requirement is to support a variety of
-assets/credendentials/documents supported by various token managers on a variety
-of ledger infra.
+Linux file-system for inspiration. In Linux everything is treated as a file. The
+Linux filesystem supports a wide variety of files on a wide variety of
+filesystems stored on a wide variety of devices. In short, it is a demonstration
+of a model that provides diversity at multiple levels. In the UL land - the
+requirement is to support a variety of assets/credentials/documents supported by
+various token managers on a variety of ledger infra.
 
 The following diagram attempts to show-case such a layered approach to the
 Unified Ledger system.
